@@ -1,13 +1,11 @@
 import React from 'react';
-import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, View } from 'react-native';
 import Home from './src/views/Home';
 
-export default function App() {
+const App: React.FC<null> = () => {
 
   return (
     <View style={styles.container}>
-      <StatusBar style="dark" />
       <Home />
     </View>
   );
@@ -16,8 +14,11 @@ export default function App() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    paddingTop: 100,
     backgroundColor: '#fff',
     alignItems: 'center',
     justifyContent: 'center',
   }
 });
+
+export default App;

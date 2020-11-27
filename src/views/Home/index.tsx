@@ -1,16 +1,38 @@
-import React from 'react';
-import { StyleSheet, View, Text } from 'react-native';
+import React, {useState} from 'react';
+import { StyleSheet, View } from 'react-native';
+import MusicQueue from '../../components/Music/MusicQueue';
+import Nav from './Nav';
 
-export default function Home() {
+const Home = () => {
+  const [getAvaliableMusic, setAvaliableMusic] = useState<Music []>([])
+  const handleNewMusic = (music: Music)  => {
+    const avaiableMusic = getAvaliableMusic;
+    avaiableMusic.push(music);
+    setAvaliableMusic(avaiableMusic);
+  }
+  
   return (
-    <Text style={styles.helloMsg}>
-      Home
-    </Text>
+    <View style={styles.home}>
+      <View style={styles.nav}>
+        <Nav onMusic={handleNewMusic}/>
+      </View>
+      <View style={styles.list}>
+        <MusicQueue queue={getAvaliableMusic}/>
+      </View>
+    </View>
   )
 }
 
 const styles = StyleSheet.create({
-  helloMsg: {
-    color: "orange"
+  home: {
+    flex: 1
+  },
+  nav: {
+    flex: 1
+  },
+  list: {
+    flex: 9
   }
 });
+
+export default Home;
