@@ -3,12 +3,11 @@ import { StyleSheet, View } from 'react-native';
 import MusicQueue from '../../components/Music/MusicQueue';
 import Nav from './Nav';
 
-const Home = () => {
-  const [getAvaliableMusic, setAvaliableMusic] = useState<Music []>([])
+const Home: React.FC<{}> = () => {
+  const [getAvaliableMusic, setAvaliableMusic] = useState<Music []>([]);
   const handleNewMusic = (music: Music)  => {
     const avaiableMusic = getAvaliableMusic;
-    avaiableMusic.push(music);
-    setAvaliableMusic(avaiableMusic);
+    setAvaliableMusic(avaiableMusic.concat([music]));
   }
   
   return (

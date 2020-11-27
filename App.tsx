@@ -2,7 +2,7 @@ import React from 'react';
 import { StyleSheet, View } from 'react-native';
 import Home from './src/views/Home';
 
-const App: React.FC<null> = () => {
+const App: React.FC<{}> = () => {
 
   return (
     <View style={styles.container}>
