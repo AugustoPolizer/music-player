@@ -4,7 +4,7 @@ import { StackNavigationProp } from '@react-navigation/stack';
 import {StatckNavigatorParamList} from '../../types/navigation'
 import {Music} from '../../types/commons';
 import * as MediaLibrary from 'expo-media-library';
-import MusicItem from '../../components/Music/MusicItem'
+import {MusicQueue} from '../../components/Music'
 
 type HomeScrennNavigator = StackNavigationProp<
   StatckNavigatorParamList,
@@ -41,11 +41,7 @@ const Playlists: React.FC<Props> = ({ navigation }) => {
   
   return (
     <View>
-      <FlatList 
-        data={avaliableMusic}
-        renderItem={({item}) => <MusicItem music={item}/>}
-        keyExtractor={(item) => item.uri}
-      />
+      <MusicQueue queue={avaliableMusic}/>
     </View>
   )
 }
