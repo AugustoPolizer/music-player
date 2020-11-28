@@ -1,6 +1,11 @@
 import React from 'react';
 import { StyleSheet, View } from 'react-native';
+import {Audio} from 'expo-av';
 import Home from './src/views/Home';
+
+Audio.setAudioModeAsync({
+  staysActiveInBackground: true
+})
 
 const App: React.FC<{}> = () => {
 

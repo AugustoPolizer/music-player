@@ -4,9 +4,9 @@ import MusicQueue from '../../components/Music/MusicQueue';
 import Nav from './Nav';
 
 const Home: React.FC<{}> = () => {
-  const [getAvaliableMusic, setAvaliableMusic] = useState<Music []>([]);
+  const [avaliableMusic, setAvaliableMusic] = useState<Music []>([]);
   const handleNewMusic = (music: Music)  => {
-    const avaiableMusic = getAvaliableMusic;
+    const avaiableMusic = avaliableMusic;
     setAvaliableMusic(avaiableMusic.concat([music]));
   }
   
@@ -16,7 +16,7 @@ const Home: React.FC<{}> = () => {
         <Nav onMusic={handleNewMusic}/>
       </View>
       <View style={styles.list}>
-        <MusicQueue queue={getAvaliableMusic}/>
+        <MusicQueue queue={avaliableMusic}/>
       </View>
     </View>
   )

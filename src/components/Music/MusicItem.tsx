@@ -1,38 +1,78 @@
-import React from 'react';
-import { Button, ImagePropTypes, Pressable } from 'react-native';
-import { Audio } from 'expo-av';
+import React, { useState } from 'react';
+import { Button, ImagePropTypes, Pressable, View } from 'react-native';
+import { Audio, AVPlaybackStatus } from 'expo-av';
 
 export interface props {
   music: Music,
 }
 
 const MusicItem: React.FC<props> = (props) => {
-  const onClick = async () => {
-    const permission = await Audio.getPermissionsAsync();
+  const [soundObject, setSoundObject] = useState<Audio.Sound | null>(null)
 
+  const statusHandler = (status: any) => {
+
+  }
+
+  const startSong = async () => {
+    const {
+      sound,
+      status
+    } = await Audio.Sound.createAsync(
+      { uri: props.music.uri },
+      { shouldPlay: true, progressUpdateIntervalMillis: 1000 }
+    );
+    sound.setOnPlaybackStatusUpdate(statusHandler);
+    setSoundObject(sound);
+  }
+
+  const checkPermission = async () => {
+    let permission = await Audio.getPermissionsAsync();
     if (permission.granted) {
-      const soundObject = new Audio.Sound();
-      await soundObject.loadAsync({
-        uri: props.music.uri
-      })
-      await soundObject.playAsync();
+      return true;
     } else {
-      const permission = await Audio.requestPermissionsAsync();
-      if (permission.granted) {
-        const soundObject = new Audio.Sound();
-        await soundObject.loadAsync({
-          uri: props.music.uri
-        })
-        await soundObject.playAsync();
+      const request = await Audio.requestPermissionsAsync();
+      if (request.granted) {
+        return true;
+      } else {
+        return false;
       }
     }
   }
 
+  const onStart = async () => {
+    if (checkPermission()) {
+      startSong();
+    }
+  }
+
+  const onStop = () => {
+    if(soundObject !== null) {
+      soundObject.stopAsync()
+      .then(() => {
+        setSoundObject(null)
+      })
+    }
+  }
+
+  const formatMusicName = (name: string) => {
+    const index = name.lastIndexOf('.');
+    if (index !== -1) {
+      return name.substring(0, index);
+    }
+    return name;
+  }
+
+
   return (
-    <Button
-      title={props.music.name}
-      onPress={onClick}
-    />
+    <View>
+      <Button
+        title={formatMusicName(props.music.name)}
+        onPress={onStart}
+        disabled={soundObject !== null}
+      />
+      {soundObject !== null ? <Button title={"Stop"} onPress={onStop}/>: null}
+    </View>
+
   )
 }
 
