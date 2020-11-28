@@ -4,7 +4,7 @@ import MusicItem from './MusicItem';
 import { Music } from '../../types/commons'
 
 export type Props = {
-  queue: Array<Music>;
+  queue: Array<Music>
 }
 
 const MusicQueue: React.FC<Props> = (props) => {

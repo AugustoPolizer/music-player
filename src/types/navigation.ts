@@ -1,4 +1,4 @@
 export type StatckNavigatorParamList = {
-  Home: undefined,
+  Home: undefined
   Playlists: undefined
 }
