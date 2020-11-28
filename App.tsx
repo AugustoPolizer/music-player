@@ -1,18 +1,27 @@
+import 'react-native-gesture-handler';
 import React from 'react';
-import { StyleSheet, View } from 'react-native';
+import { StyleSheet} from 'react-native';
+import { NavigationContainer } from '@react-navigation/native';
+import { createStackNavigator } from '@react-navigation/stack';
 import {Audio} from 'expo-av';
-import Home from './src/views/Home';
+import {Home, Playlists} from './src/screens';
+import {StatckNavigatorParamList} from './src/types/navigation';
 
 Audio.setAudioModeAsync({
   staysActiveInBackground: true
 })
 
-const App: React.FC<{}> = () => {
+const Stack = createStackNavigator<StatckNavigatorParamList>();
 
+const App: React.FC<{}> = () => {
+  
   return (
-    <View style={styles.container}>
-      <Home />
-    </View>
+    <NavigationContainer>
+      <Stack.Navigator>
+        <Stack.Screen name="Home" component={Home} />
+        <Stack.Screen name="Playlists" component={Playlists} />
+      </Stack.Navigator>
+    </NavigationContainer>
   );
 }
 

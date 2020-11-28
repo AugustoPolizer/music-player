@@ -1,16 +1,19 @@
 import React, { useState } from 'react';
 import { Button, View } from 'react-native';
 import { Audio } from 'expo-av';
+import {Music} from '../../../src/types/commons';
 
-export interface props {
+export type Props = {
   music: Music,
 }
 
-const MusicItem: React.FC<props> = (props) => {
+const MusicItem: React.FC<Props> = (props) => {
   const [soundObject, setSoundObject] = useState<Audio.Sound | null>(null)
 
   const statusHandler = (status: any) => {
-
+    if (status.didJustFinish) {
+      setSoundObject(null);
+    }
   }
 
   const startSong = async () => {

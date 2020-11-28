@@ -1,4 +1,4 @@
-interface Music {
+export type Music = {
   uri: string;
   name: string;
 }

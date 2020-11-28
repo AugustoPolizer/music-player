@@ -1,8 +1,9 @@
-import React, { useState} from 'react';
+import React from 'react';
 import { FlatList, StyleSheet } from 'react-native'
 import MusicItem from './MusicItem';
+import { Music } from '../../types/commons'
 
-export interface Props {
+export type Props = {
   queue: Array<Music>;
 }
 
