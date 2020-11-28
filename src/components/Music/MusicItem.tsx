@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { Button, ImagePropTypes, Pressable, View } from 'react-native';
-import { Audio, AVPlaybackStatus } from 'expo-av';
+import { Button, View } from 'react-native';
+import { Audio } from 'expo-av';
 
 export interface props {
   music: Music,
