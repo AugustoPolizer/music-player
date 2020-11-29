@@ -15,7 +15,7 @@ export type Props = {
   navigation: HomeScrennNavigator
 }
 
-const Playlists: React.FC<Props> = ({ navigation }) => {
+const Play: React.FC<Props> = ({ navigation }) => {
   const [currentMusic, setCurrentMusic] = useState<number>(0);
   const [soundObject, setSoundObject] = useState<Audio.Sound | null>(null);
   const [permission, setPermission] = useState<PermissionResponse | null>(null);
@@ -80,4 +80,4 @@ const styles = StyleSheet.create({
 
 })
 
-export default Playlists;
+export default Play;

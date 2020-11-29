@@ -19,7 +19,7 @@ const Home: React.FC<Props> = ({ navigation }) => {
     <View>
       <Text> Home</Text>
       <Button
-        title="Tocar musicas"
+        title="Tocar músicas"
         onPress={() => navigation.navigate('Play')}
       />
       <Button
