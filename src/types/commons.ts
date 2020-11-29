@@ -3,7 +3,3 @@ export type Music = {
   name: string
   duration: number
 }
-
-export type PlayList = {
-  name: string
-}
