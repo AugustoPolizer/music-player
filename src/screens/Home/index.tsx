@@ -1,8 +1,8 @@
-import React, {useState} from 'react';
+import React from 'react';
 import { StyleSheet, Text, View, Button } from 'react-native';
 import { StackNavigationProp } from '@react-navigation/stack';
-import {StatckNavigatorParamList} from '../../types/navigation'
-import {PlayList} from '../../types/commons'
+import { StatckNavigatorParamList } from '../../types/navigation'
+
 
 type HomeScrennNavigator = StackNavigationProp<
   StatckNavigatorParamList,
@@ -14,12 +14,15 @@ export type Props = {
 }
 
 const Home: React.FC<Props> = ({ navigation }) => {
-  const [playLists, setPlayLists] = useState<Array<PlayList>>([])
 
   return (
     <View>
       <Text> Home</Text>
-      <Button 
+      <Button
+        title="Tocar musicas"
+        onPress={() => navigation.navigate('Play')}
+      />
+      <Button
         title="Criar playlist"
         onPress={() => navigation.navigate('Playlists')}
       />
