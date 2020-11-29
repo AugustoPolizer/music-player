@@ -1,13 +1,11 @@
 import 'react-native-gesture-handler';
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { StyleSheet } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { Audio } from 'expo-av';
 import { Home, } from './src/screens';
 import { StatckNavigatorParamList } from './src/types/navigation';
-
-import * as MediaLibrary from 'expo-media-library';
 
 Audio.setAudioModeAsync({
   staysActiveInBackground: true

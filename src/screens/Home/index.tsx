@@ -1,6 +1,6 @@
 import React from 'react';
 import Player  from '../../components/Player'
-import { StyleSheet, Text, View, Button } from 'react-native';
+import { StyleSheet, View} from 'react-native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { StatckNavigatorParamList } from '../../types/navigation'
 
