@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import { Audio } from 'expo-av';
 import { PermissionResponse } from 'expo-media-library';
@@ -80,8 +80,8 @@ const Player: React.FC = () => {
 
   return (
     <View>
-      <Text>{musics.length !== 0 ? musics[currentMusic].name : ""}</Text>
-      <Text>{musics.length !== 0 ? musics[currentMusic].duration : ""}</Text>
+      <Text> { musics.length !== 0 ? musics[currentMusic].name : "" } </Text>
+      <Text> { musics.length !== 0 ? musics[currentMusic].duration : "" } </Text>
     </View>
   )
 }
