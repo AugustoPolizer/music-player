@@ -11,7 +11,6 @@ const Timer: React.FC<Props> = (props) => {
     <View>
       <Text> {props.currentTime} / {props.duration} </Text>
     </View>
-
   )
 }
 

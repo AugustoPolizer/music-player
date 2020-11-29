@@ -1,45 +1,45 @@
-import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet } from 'react-native';
-import { Audio } from 'expo-av';
-import { PermissionResponse } from 'expo-media-library';
-import * as MediaLibrary from 'expo-media-library';
-import { Music } from '../../types/commons';
+import React, { useState, useEffect } from "react";
+import { View, Text, StyleSheet } from "react-native";
+import { Audio } from "expo-av";
+import { PermissionResponse } from "expo-media-library";
+import * as MediaLibrary from "expo-media-library";
+import { Music } from "../../types/commons";
+import MusicDisplay from "./musicDisplay";
 
 const Player: React.FC = () => {
   const [currentMusic, setCurrentMusic] = useState<number>(0);
   const [soundObject, setSoundObject] = useState<Audio.Sound | null>(null);
   const [permission, setPermission] = useState<PermissionResponse | null>(null);
-  const [musics, setMusics] = useState<Array<Music>>([])
+  const [musics, setMusics] = useState<Array<Music>>([]);
 
   useEffect(() => {
-    MediaLibrary.requestPermissionsAsync()
-      .then((permission) => {
-        if (permission.granted) {
-          MediaLibrary.getAssetsAsync({
-            mediaType: "audio"
-          })
-            .then((mediaQuery) => {
-              setMusics(mediaQuery.assets.map((asset): Music => {
+    MediaLibrary.requestPermissionsAsync().then((permission) => {
+      if (permission.granted) {
+        MediaLibrary.getAssetsAsync({
+          mediaType: "audio",
+        }).then((mediaQuery) => {
+          setMusics(
+            mediaQuery.assets.map(
+              (asset): Music => {
                 return {
                   name: asset.filename,
                   uri: asset.uri,
                   duration: asset.duration,
-                }
-              }))
-              startMusic();
-            })
-        }
-      })
-  }, [])
+                };
+              }
+            )
+          );
+          startMusic();
+        });
+      }
+    });
+  }, []);
 
   const startMusic = async () => {
     const permissionResponse = await getPermission();
     if (permissionResponse.granted) {
       try {
-        const {
-          sound,
-          status
-        } = await Audio.Sound.createAsync(
+        const { sound, status } = await Audio.Sound.createAsync(
           { uri: musics[currentMusic].uri },
           { shouldPlay: true, progressUpdateIntervalMillis: 1000 }
         );
@@ -49,7 +49,7 @@ const Player: React.FC = () => {
         alert(error);
       }
     }
-  }
+  };
 
   const statusHandler = (status: any) => {
     if (status.didJustFinish) {
@@ -59,7 +59,7 @@ const Player: React.FC = () => {
         setSoundObject(null);
       }
     }
-  }
+  };
 
   const getPermission = (): Promise<PermissionResponse> => {
     return new Promise<PermissionResponse>((resolve, reject) => {
@@ -71,23 +71,22 @@ const Player: React.FC = () => {
           })
           .catch((error) => {
             reject(error);
-          })
+          });
       } else {
         resolve(permission);
       }
-    })
-  }
+    });
+  };
 
   return (
     <View>
-      <Text> { musics.length !== 0 ? musics[currentMusic].name : "" } </Text>
-      <Text> { musics.length !== 0 ? musics[currentMusic].duration : "" } </Text>
+      <MusicDisplay name={musics.length !== 0 ? musics[currentMusic].name : "Teste"} currentTime={0} duration={musics.length !== 0 ? musics[currentMusic].duration : 0} />
     </View>
-  )
-}
+  );
+};
 
 const styles = StyleSheet.create({
 
-})
+});
 
 export default Player;
