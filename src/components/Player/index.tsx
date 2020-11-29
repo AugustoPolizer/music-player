@@ -18,8 +18,8 @@ const Player: React.FC = () => {
           MediaLibrary.getAssetsAsync({
             mediaType: "audio"
           })
-            .then((assets) => {
-              setMusics(assets.assets.map((asset): Music => {
+            .then((mediaQuery) => {
+              setMusics(mediaQuery.assets.map((asset): Music => {
                 return {
                   name: asset.filename,
                   uri: asset.uri,
