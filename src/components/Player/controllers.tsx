@@ -4,7 +4,7 @@ import { Audio } from 'expo-av';
 import PlayerButton from './playerButton';
 
 export type Props = {
-  soundObject: Audio.Sound | null,
+  soundObject: Audio.Sound | null
   forwardMusic: () => void
   backwardMusic: () => void
 }
@@ -49,10 +49,10 @@ const Controllers: React.FC<Props> = (props) => {
 
   return (
     <View style={styles.buttonsContainer}>
-      <PlayerButton text="play" onClick={startMusic} />
+      <PlayerButton text="backward" onClick={props.backwardMusic} />
+      <PlayerButton text="play"  onClick={startMusic} />
       <PlayerButton text="pause" onClick={pauseMusic} />
       <PlayerButton text="foward" onClick={props.forwardMusic} />
-      <PlayerButton text="backward" onClick={props.backwardMusic} />
     </View>
   )
 }

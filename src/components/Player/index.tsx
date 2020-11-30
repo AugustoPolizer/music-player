@@ -1,12 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { View, Text, StyleSheet } from "react-native";
-import { Audio } from "expo-av";
-import { PermissionResponse } from "expo-media-library";
 import * as MediaLibrary from "expo-media-library";
-import { Music } from "../../types/commons";
+import { Audio } from "expo-av";
 import Timer from "./timer";
-import PlayerButton from './playerButton'
 import Controllers from "./controllers";
+import { Music } from "../../types/commons";
+
 
 const Player: React.FC = () => {
   const [currentMusic, setCurrentMusic] = useState<number>(0);
@@ -79,9 +78,9 @@ const Player: React.FC = () => {
   const createSound = async (music: Music) => {
     const { sound, status } = await Audio.Sound.createAsync(
       { uri: music.uri },
-      { progressUpdateIntervalMillis: 1000 }
+      { progressUpdateIntervalMillis: 1000 },
+      statusHandler
     );
-    sound.setOnPlaybackStatusUpdate(statusHandler);
     return sound;
   }
 
@@ -97,17 +96,20 @@ const Player: React.FC = () => {
     }
   }
 
+  const formatMusicName = (name: string) => {
+    return name.substring(0, name.lastIndexOf('.'));
+  }
+
   return (
     <View style={styles.displayMusicContainer}>
-      <Text style={styles.musicName}>{musics[currentMusic].name}</Text>
+      <Text style={styles.musicName}>{formatMusicName(musics[currentMusic].name)}</Text>
+      <Timer
+        duration={musics[currentMusic].duration}
+      />
       <Controllers
         soundObject={soundObject}
         forwardMusic={forwardMusic}
         backwardMusic={backwardMusic}
-      />
-      <Timer
-        currentTime={100}
-        duration={1000}
       />
     </View>
   );

@@ -14,26 +14,19 @@ Audio.setAudioModeAsync({
 const Stack = createStackNavigator<StatckNavigatorParamList>();
 
 const App: React.FC<{}> = () => {
-  // TODO: Checar se não é possível implementar isso de uma forma melhor
   
   return (
       <NavigationContainer>
-        <Stack.Navigator>
+        <Stack.Navigator
+          screenOptions={{headerShown: false}}
+        >
           <Stack.Screen name="Home" component={Home} />
         </Stack.Navigator>
       </NavigationContainer>
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    paddingTop: 100,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  }
-});
+
 
 export default App;
 

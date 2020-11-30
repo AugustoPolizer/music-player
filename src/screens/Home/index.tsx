@@ -16,14 +16,16 @@ export type Props = {
 const Home: React.FC<Props> = ({ navigation }) => {
 
   return (
-    <View>
+    <View style={styles.playerContainer}>
       <Player></Player>
     </View>
   )
 }
 
 const styles = StyleSheet.create({
-
+  playerContainer: {
+    paddingTop: 50
+  }
 });
 
 export default Home;
