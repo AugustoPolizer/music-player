@@ -105,12 +105,6 @@ const Player: React.FC = () => {
   const formatMusicName = (name: string) => {
     return name.substring(0, name.lastIndexOf("."));
   };
-  const getRightContetent = (progress:any, dragX:any)  => {
-     return forwardMusic
-    }
-  const getLeftContetent = (progress:any, dragX:any) => {
-    return backwardMusic
-  }
 
   return (
     <View style={styles.displayMusicContainer}>
@@ -118,11 +112,9 @@ const Player: React.FC = () => {
         <Library musics={musics} />
       </View>
       <View style={styles.menus}>
-      <Swipeable renderRightActions={getRightContetent} renderLeftActions={getLeftContetent}>
-      <Text style={styles.musicName}>
+        <Text style={styles.musicName}>
           {formatMusicName(musics[currentMusic].name)}
         </Text>
-      </Swipeable>
         <Timer duration={musics[currentMusic].duration} />
         <Controllers
           soundObject={soundObject}
@@ -151,7 +143,6 @@ const styles = StyleSheet.create({
     borderColor: "white",
   },
   scrollView: {
-    overflow: "scroll",
     borderWidth: 2,
     width: "90%",
     borderRadius: 10,
@@ -163,7 +154,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     position: "relative",
     height: "20%",
-    width : '100%'
+    width: "100%",
   },
 });
 

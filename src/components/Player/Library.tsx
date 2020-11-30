@@ -1,6 +1,6 @@
 import React from "react";
 import { Text, StyleSheet, View } from "react-native";
-import { TextInput, TouchableOpacity } from "react-native-gesture-handler";
+import { ScrollView, TextInput, TouchableOpacity } from "react-native-gesture-handler";
 import { Music } from "../../types/commons";
 
 export type Props = {
@@ -9,7 +9,7 @@ export type Props = {
 
 const PlayerButton: React.FC<Props> = (props) => {
   return (
-    <View style={styles.body}>
+    <ScrollView>
       <TextInput style={styles.searchInput} placeholder={'Search'}></TextInput>
       {props.musics.map((music) => {
         return (
@@ -18,15 +18,12 @@ const PlayerButton: React.FC<Props> = (props) => {
           </TouchableOpacity>
         );
       })}
-    </View>
+    </ScrollView>
   );
 };
 
 const styles = StyleSheet.create({
-  body: {
-    alignItems: "center",
-    justifyContent: "center",
-  },
+
   libraryText: {
     textAlign: "center",
     textTransform: "capitalize",
