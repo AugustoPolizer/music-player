@@ -1,5 +1,5 @@
 import React from "react";
-import { Text, StyleSheet, View } from "react-native";
+import { Text, StyleSheet } from "react-native";
 import { ScrollView, TextInput, TouchableOpacity } from "react-native-gesture-handler";
 import { Music } from "../../types/commons";
 
@@ -13,7 +13,7 @@ const PlayerButton: React.FC<Props> = (props) => {
       <TextInput style={styles.searchInput} placeholder={'Search'}></TextInput>
       {props.musics.map((music) => {
         return (
-          <TouchableOpacity key={music.name + music.duration} style={styles.body}>
+          <TouchableOpacity key={music.name + music.duration}>
             <Text style={styles.libraryText}>{String(music.name).substring(0,String(music.name).lastIndexOf('.'))}</Text>
           </TouchableOpacity>
         );
