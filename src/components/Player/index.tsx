@@ -138,8 +138,6 @@ const Player: React.FC = () => {
     }
   }
 
-  
-
   const formatMusicName = (name: string) => {
     return name.substring(0, name.lastIndexOf("."));
   };
