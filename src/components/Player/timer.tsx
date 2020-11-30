@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo } from 'react'
-import { Text, View, TimePickerAndroid, StyleSheet } from 'react-native'
+import { Text, View, StyleSheet } from 'react-native'
 
 export type Props = {
   duration: number
@@ -19,7 +19,7 @@ const formatTime = (time: Time) => {
 }
 
 const Timer: React.FC<Props> = (props) => {
-  const [intervalId, setIntervalId] = useState<NodeJS.Timeout> ();
+  const [intervalId, setIntervalId] = useState<NodeJS.Timeout | null>(null);
   const [currentTime, setCurrentTime] = useState<Time>({
     seconds: 0,
     minutes: 0,
@@ -49,20 +49,19 @@ const Timer: React.FC<Props> = (props) => {
     const id = setInterval(tick, 1000)
     setIntervalId(id);
     return function cleanup() {
-      if(intervalId)
-        clearInterval(intervalId);
+      clearInterval(id);
+      setIntervalId(null);
     }
   }, [props.duration])
 
-  useEffect(() => {
-    if(props.paused) {
-      if(intervalId)
-        clearInterval(intervalId)
-    } else {
-      const id = setInterval(tick, 1000);
-      setIntervalId(id);
-    }
-  }, [props.paused])
+  // useEffect(() => {
+  //   if(props.paused) {
+  //     if(intervalId){
+  //       clearInterval(intervalId);
+  //       setIntervalId(null);
+  //     }
+  //   } else {}
+  // }, [props.paused])
 
   const tick = () => {
     setCurrentTime(prevTime => {
@@ -79,8 +78,6 @@ const Timer: React.FC<Props> = (props) => {
     })
   }
 
- 
-
   return (
     <View>
       <Text style={styles.textColor}> {formatTime(currentTime)} - {durationTime} </Text>
@@ -88,9 +85,9 @@ const Timer: React.FC<Props> = (props) => {
   )
 }
 const styles = StyleSheet.create({
-  textColor : {
-    color : 'white',
-    margin : 5,
+  textColor: {
+    color: 'white',
+    margin: 5,
   }
 });
 
