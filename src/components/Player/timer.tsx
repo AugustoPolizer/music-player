@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo } from 'react'
-import { Text, View, TimePickerAndroid } from 'react-native'
+import { Text, View, TimePickerAndroid, StyleSheet } from 'react-native'
 
 export type Props = {
   duration: number,
@@ -69,9 +69,15 @@ const Timer: React.FC<Props> = (props) => {
 
   return (
     <View>
-      <Text> {formatTime(currentTime)} / {durationTime} </Text>
+      <Text style={styles.textColor}> {formatTime(currentTime)} - {durationTime} </Text>
     </View>
   )
 }
+const styles = StyleSheet.create({
+  textColor : {
+    color : 'white',
+    margin : 5,
+  }
+});
 
 export default Timer;
