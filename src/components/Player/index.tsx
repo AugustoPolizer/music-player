@@ -33,18 +33,46 @@ const Player: React.FC = () => {
           );
         });
       }
-      alert(soundObject)
     });
   }, []);
 
-  const statusHandler = (status: any) => {
-    if (status.didJustFinish) {
-      if (currentMusic + 1 < musics.length) {
-        setCurrentMusic(currentMusic + 1);
-        startMusic();
-      } else {
-        setSoundObject(null);
+  useEffect(() => {
+    if (musics.length !== 0) {
+      createMusic(musics[0])
+        .then((sound) => {
+          setSoundObject(sound);
+        })
+        .catch((error) => {
+          setSoundObject(null)
+        })
+    }
+  }, [musics])
+
+  useEffect(() => {
+    if (soundObject) {
+      soundObject.playAsync()
+    }
+    return function cleanup() {
+      if (soundObject) {
+        soundObject.stopAsync();
+        soundObject.unloadAsync();
       }
+    }
+  }, [soundObject])
+
+  useEffect(() => {
+    createMusic(musics[currentMusic])
+      .then((sound) => {
+        setSoundObject(sound);
+      })
+      .catch((error) => {
+        setSoundObject(null);
+      })
+  }, [currentMusic])
+
+  const statusHandler = (status: any) => {
+    if (status.didJustFinish && currentMusic + 1 < musics.length) {
+      setCurrentMusic(currentMusic + 1);
     }
   };
 
@@ -60,11 +88,7 @@ const Player: React.FC = () => {
   const startMusic = async () => {
     const permissionResponse = await getPermission();
     if (permissionResponse.granted) {
-      if(soundObject === null){
-        const sound = await createMusic(musics[currentMusic]);
-        setSoundObject(sound);
-        sound.playAsync();
-      } else {
+      if (soundObject !== null) {
         soundObject.playAsync();
       }
     }
@@ -76,47 +100,17 @@ const Player: React.FC = () => {
     }
   }
 
-  const fowardMusic = () => {
-    if(currentMusic + 1 < musics.length){
-      if(soundObject !== null) {
-        soundObject.stopAsync()
-        .then(() => {
-          setSoundObject(null);
-          setCurrentMusic(currentMusic + 1);
-          alert(currentMusic)
-          startMusic();
-        })
-        .catch(error => {
-          alert(error)
-        })
-      } else {
-        setCurrentMusic(currentMusic + 1);
-        startMusic();
-      }
+  const fowardMusic = async () => {
+    if (currentMusic + 1 < musics.length) {
+      setCurrentMusic(currentMusic + 1);
     }
   }
 
-  const backwardMusic = () => {
-    if(currentMusic - 1 >= 0){
-      if(soundObject !== null) {
-        soundObject.stopAsync()
-        .then(() => {
-          setSoundObject(null);
-          setCurrentMusic(currentMusic - 1);
-          alert(currentMusic)
-          startMusic();
-        })
-        .catch(error => {
-          alert(error)
-        })
-      } else {
-        setCurrentMusic(currentMusic - 1);
-        startMusic();
-      }
+  const backwardMusic = async () => {
+    if (currentMusic - 1 >= 0) {
+      setCurrentMusic(currentMusic - 1);
     }
   }
-
-  
 
   const getPermission = (): Promise<PermissionResponse> => {
     return new Promise<PermissionResponse>((resolve, reject) => {
@@ -141,8 +135,8 @@ const Player: React.FC = () => {
       <View style={styles.buttonsContainer}>
         <PlayerButton text="play" onClick={startMusic} />
         <PlayerButton text="pause" onClick={pauseMusic} />
-        <PlayerButton text="foward" onClick={fowardMusic}/>
-        <PlayerButton text="backward" onClick={backwardMusic}/>
+        <PlayerButton text="foward" onClick={fowardMusic} />
+        <PlayerButton text="backward" onClick={backwardMusic} />
         <Timer
           currentTime={100}
           duration={1000}
