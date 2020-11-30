@@ -1,8 +1,9 @@
 import React from 'react';
 import Player  from '../../components/Player'
-import { StyleSheet, View} from 'react-native';
+import { Dimensions, StyleSheet, View} from 'react-native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { StatckNavigatorParamList } from '../../types/navigation'
+import { ScrollView } from 'react-native-gesture-handler';
 
 type HomeScrennNavigator = StackNavigationProp<
   StatckNavigatorParamList,
@@ -15,16 +16,21 @@ export type Props = {
 
 const Home: React.FC<Props> = ({ navigation }) => {
 
-  return (
-    <View style={styles.playerContainer}>
-      <Player></Player>
-    </View>
+  return(
+    <ScrollView >
+      <View style={styles.playerContainer}>
+        <Player ></Player>
+      </View>
+      
+    </ScrollView>
   )
 }
 
 const styles = StyleSheet.create({
   playerContainer: {
-    paddingTop: 50
+    height : Dimensions.get('window').height,
+    width : Dimensions.get('window').width,
+    paddingTop : 50,
   }
 });
 

@@ -6,7 +6,6 @@ import Timer from "./timer";
 import Controllers from "./controllers";
 import { Music } from "../../types/commons";
 import Library from "./Library";
-import Swipeable from "react-native-gesture-handler/Swipeable";
 
 const Player: React.FC = () => {
   const [currentMusic, setCurrentMusic] = useState<number>(0);
