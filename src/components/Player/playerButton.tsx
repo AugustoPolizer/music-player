@@ -12,8 +12,14 @@ export type Props = {
 }
 
 const PlayerButton: React.FC<Props> = (props) => {
+  const backgroundColor = StyleSheet.create({
+    buttons: {
+      backgroundColor: props.backgroundColor
+    }
+  })
+  const combinedStyles = StyleSheet.compose(styles.buttons, backgroundColor.buttons)
   return (
-    <TouchableOpacity style={styles.buttons} onPress={props.onClick}> 
+    <TouchableOpacity style={combinedStyles} onPress={props.onClick}> 
       <Icon name={props.name} size={props.size} color={props.color ? props.color : 'black'} />
   </TouchableOpacity>);
 }
