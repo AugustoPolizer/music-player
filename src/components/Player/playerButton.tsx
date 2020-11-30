@@ -21,6 +21,7 @@ const PlayerButton: React.FC<Props> = (props) => {
   return (
     <TouchableOpacity style={combinedStyles} onPress={props.onClick}> 
       <Icon name={props.name} size={props.size} color={props.color ? props.color : 'black'} />
+      <Text style={styles.textButton}>{props.name}</Text>
   </TouchableOpacity>);
 }
 
@@ -31,6 +32,11 @@ const styles = StyleSheet.create({
     justifyContent : 'center',
     margin :10,
     backgroundColor: "white",
+  },
+  textButton:{
+    fontSize: 10,
+    textTransform : 'capitalize',
+    color : 'black'    
   }
 })
 
