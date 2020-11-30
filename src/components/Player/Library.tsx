@@ -1,6 +1,6 @@
 import React from "react";
 import { Text, StyleSheet, View } from "react-native";
-import { TouchableOpacity } from "react-native-gesture-handler";
+import { TextInput, TouchableOpacity } from "react-native-gesture-handler";
 import { Music } from "../../types/commons";
 
 export type Props = {
@@ -10,10 +10,11 @@ export type Props = {
 const PlayerButton: React.FC<Props> = (props) => {
   return (
     <View style={styles.body}>
+      <TextInput style={styles.searchInput} placeholder={'Search'}></TextInput>
       {props.musics.map((music) => {
         return (
           <TouchableOpacity key={music.name + music.duration} style={styles.body}>
-            <Text style={styles.libraryText}>{music.name}</Text>
+            <Text style={styles.libraryText}>{String(music.name).substring(0,String(music.name).lastIndexOf('.'))}</Text>
           </TouchableOpacity>
         );
       })}
@@ -23,7 +24,6 @@ const PlayerButton: React.FC<Props> = (props) => {
 
 const styles = StyleSheet.create({
   body: {
-    display: "flex",
     alignItems: "center",
     justifyContent: "center",
   },
@@ -33,8 +33,15 @@ const styles = StyleSheet.create({
     fontSize: 18,
     color: "black",
     padding : 10,
-    borderBottomWidth : 2,
   },
+  searchInput : {
+    width : '95%',
+    height : 40,
+    textAlign : 'center',
+    borderWidth : 2,
+    borderRadius : 20,
+    margin : 10,
+  }
 });
 
 export default PlayerButton;
