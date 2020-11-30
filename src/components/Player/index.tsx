@@ -5,17 +5,19 @@ import { Audio } from "expo-av";
 import Timer from "./timer";
 import Controllers from "./controllers";
 import { Music } from "../../types/commons";
-
-
+import Library from "./Library";
+import Swipeable from "react-native-gesture-handler/Swipeable";
 
 const Player: React.FC = () => {
   const [currentMusic, setCurrentMusic] = useState<number>(0);
   const [soundObject, setSoundObject] = useState<Audio.Sound | null>(null);
-  const [musics, setMusics] = useState<Array<Music>>([{
-    name: "",
-    uri: "",
-    duration: 0
-  }]);
+  const [musics, setMusics] = useState<Array<Music>>([
+    {
+      name: "",
+      uri: "",
+      duration: 0,
+    },
+  ]);
 
   useEffect(() => {
     MediaLibrary.requestPermissionsAsync().then((permission) => {
@@ -23,13 +25,16 @@ const Player: React.FC = () => {
         MediaLibrary.getAssetsAsync({
           mediaType: "audio",
         }).then((mediaQuery) => {
-          setMusics(mediaQuery.assets.map((asset): Music => {
-            return {
-              name: asset.filename,
-              uri: asset.uri,
-              duration: asset.duration,
-            };
-          })
+          setMusics(
+            mediaQuery.assets.map(
+              (asset): Music => {
+                return {
+                  name: asset.filename,
+                  uri: asset.uri,
+                  duration: asset.duration,
+                };
+              }
+            )
           );
         });
       }
@@ -43,22 +48,22 @@ const Player: React.FC = () => {
           setSoundObject(sound);
         })
         .catch((error) => {
-          setSoundObject(null)
-        })
+          setSoundObject(null);
+        });
     }
-  }, [musics])
+  }, [musics]);
 
   useEffect(() => {
     if (soundObject) {
-      soundObject.playAsync()
+      soundObject.playAsync();
     }
     return function cleanup() {
       if (soundObject) {
         soundObject.stopAsync();
         soundObject.unloadAsync();
       }
-    }
-  }, [soundObject])
+    };
+  }, [soundObject]);
 
   useEffect(() => {
     createSound(musics[currentMusic])
@@ -67,8 +72,8 @@ const Player: React.FC = () => {
       })
       .catch((error) => {
         setSoundObject(null);
-      })
-  }, [currentMusic])
+      });
+  }, [currentMusic]);
 
   const statusHandler = (status: any) => {
     if (status.didJustFinish && currentMusic + 1 < musics.length) {
@@ -83,35 +88,48 @@ const Player: React.FC = () => {
       statusHandler
     );
     return sound;
-  }
+  };
 
   const forwardMusic = async () => {
     if (currentMusic + 1 < musics.length) {
       setCurrentMusic(currentMusic + 1);
     }
-  }
+  };
 
   const backwardMusic = async () => {
     if (currentMusic - 1 >= 0) {
       setCurrentMusic(currentMusic - 1);
     }
-  }
+  };
 
   const formatMusicName = (name: string) => {
-    return name.substring(0, name.lastIndexOf('.'));
+    return name.substring(0, name.lastIndexOf("."));
+  };
+  const getRightContetent = (progress:any, dragX:any)  => {
+     return forwardMusic
+    }
+  const getLeftContetent = (progress:any, dragX:any) => {
+    return backwardMusic
   }
 
   return (
     <View style={styles.displayMusicContainer}>
-      <Text style={styles.musicName}>{formatMusicName(musics[currentMusic].name)}</Text>
-      <Timer
-        duration={musics[currentMusic].duration}
-      />
-      <Controllers
-        soundObject={soundObject}
-        forwardMusic={forwardMusic}
-        backwardMusic={backwardMusic}
-      />
+      <View style={styles.scrollView}>
+        <Library musics={musics} />
+      </View>
+      <View style={styles.menus}>
+      <Swipeable renderRightActions={getRightContetent} renderLeftActions={getLeftContetent}>
+      <Text style={styles.musicName}>
+          {formatMusicName(musics[currentMusic].name)}
+        </Text>
+      </Swipeable>
+        <Timer duration={musics[currentMusic].duration} />
+        <Controllers
+          soundObject={soundObject}
+          forwardMusic={forwardMusic}
+          backwardMusic={backwardMusic}
+        />
+      </View>
     </View>
   );
 };
@@ -121,11 +139,31 @@ const styles = StyleSheet.create({
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
-    margin: 10,
+    backgroundColor: "black",
+    paddingTop: 20,
   },
 
   musicName: {
-    fontSize: 20
+    fontSize: 20,
+    color: "white",
+    textTransform: "capitalize",
+    borderBottomWidth: 2,
+    borderColor: "white",
+  },
+  scrollView: {
+    overflow: "scroll",
+    borderWidth: 2,
+    width: "90%",
+    borderRadius: 10,
+    height: "80%",
+    backgroundColor: "white",
+  },
+  menus: {
+    alignItems: "center",
+    justifyContent: "center",
+    position: "relative",
+    height: "20%",
+    width : '100%'
   },
 });
 

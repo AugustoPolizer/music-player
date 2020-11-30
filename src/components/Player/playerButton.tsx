@@ -2,6 +2,7 @@ import React from "react";
 import { Text, StyleSheet } from "react-native";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import Icon from 'react-native-vector-icons/FontAwesome';
+import Swipeable from 'react-native-gesture-handler/Swipeable';
 
 export type Props = {
   name: string,
@@ -36,7 +37,7 @@ const styles = StyleSheet.create({
   textButton:{
     fontSize: 10,
     textTransform : 'capitalize',
-    color : 'black'    
+    color : 'white'  
   }
 })
 

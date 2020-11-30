@@ -49,10 +49,10 @@ const Controllers: React.FC<Props> = (props) => {
 
   return (
     <View style={styles.buttonsContainer}>
-      <PlayerButton name="backward" size={30}  onClick={props.backwardMusic} />
+      <PlayerButton name="backward" size={30} color={'white'} onClick={props.backwardMusic} />
       <PlayerButton name="play"  size={30} color={'red'} onClick={startMusic} />
-      <PlayerButton name="pause" size={30} onClick={pauseMusic} />
-      <PlayerButton name="forward" size={30} onClick={props.forwardMusic} />
+      <PlayerButton name="pause" size={30} color={'white'} onClick={pauseMusic} />
+      <PlayerButton name="forward" size={30} color={'white'} onClick={props.forwardMusic} />
     </View>
   )
 }
