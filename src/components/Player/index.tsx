@@ -6,11 +6,12 @@ import Timer from "./timer";
 import Controllers from "./controllers";
 import { Music } from "../../types/commons";
 import Library from "./Library";
-import Swipeable from "react-native-gesture-handler/Swipeable";
 
 const Player: React.FC = () => {
   const [currentMusic, setCurrentMusic] = useState<number>(0);
   const [soundObject, setSoundObject] = useState<Audio.Sound | null>(null);
+  const [paused, setPaused] = useState<boolean>(false);
+  const [permission, setPermission] = useState<Audio.PermissionResponse | null>(null);
   const [musics, setMusics] = useState<Array<Music>>([
     {
       name: "",
@@ -75,6 +76,24 @@ const Player: React.FC = () => {
       });
   }, [currentMusic]);
 
+  const getPermission = (): Promise<Audio.PermissionResponse> => {
+    return new Promise<Audio.PermissionResponse>((resolve, reject) => {
+      if (permission === null) {
+        Audio.getPermissionsAsync()
+          .then((response) => {
+            setPermission(response);
+            resolve(response);
+          })
+          .catch((error) => {
+            reject(error);
+          });
+      } else {
+        resolve(permission);
+      }
+    });
+  };
+
+
   const statusHandler = (status: any) => {
     if (status.didJustFinish && currentMusic + 1 < musics.length) {
       setCurrentMusic(currentMusic + 1);
@@ -102,9 +121,29 @@ const Player: React.FC = () => {
     }
   };
 
+  const startMusic = async () => {
+    const permissionResponse = await getPermission();
+    if (permissionResponse.granted) {
+      if (soundObject !== null) {
+        soundObject.playAsync();
+        setPaused(false)
+      }
+    }
+  };
+
+  const pauseMusic = async () => {
+    if (soundObject !== null) {
+      soundObject.pauseAsync();
+      setPaused(true);
+    }
+  }
+
+  
+
   const formatMusicName = (name: string) => {
     return name.substring(0, name.lastIndexOf("."));
   };
+
 
   return (
     <View style={styles.displayMusicContainer}>
@@ -115,11 +154,16 @@ const Player: React.FC = () => {
         <Text style={styles.musicName}>
           {formatMusicName(musics[currentMusic].name)}
         </Text>
-        <Timer duration={musics[currentMusic].duration} />
+        <Timer 
+          duration={musics[currentMusic].duration} 
+          paused={paused}  
+        />
         <Controllers
           soundObject={soundObject}
           forwardMusic={forwardMusic}
           backwardMusic={backwardMusic}
+          pauseMusic={pauseMusic}
+          startMusic={startMusic}
         />
       </View>
     </View>

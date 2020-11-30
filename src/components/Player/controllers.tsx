@@ -7,51 +7,21 @@ export type Props = {
   soundObject: Audio.Sound | null
   forwardMusic: () => void
   backwardMusic: () => void
+  pauseMusic: () => void
+  startMusic: () => void
 }
 
 const Controllers: React.FC<Props> = (props) => {
-  const [permission, setPermission] = useState<Audio.PermissionResponse | null>(null);
-  const getPermission = (): Promise<Audio.PermissionResponse> => {
-    return new Promise<Audio.PermissionResponse>((resolve, reject) => {
-      if (permission === null) {
-        Audio.getPermissionsAsync()
-          .then((response) => {
-            setPermission(response);
-            resolve(response);
-          })
-          .catch((error) => {
-            reject(error);
-          });
-      } else {
-        resolve(permission);
-      }
-    });
-  };
-
+ 
   useEffect(() => {
-    startMusic();
+    props.startMusic();
   }, [props.soundObject])
-
-  const startMusic = async () => {
-    const permissionResponse = await getPermission();
-    if (permissionResponse.granted) {
-      if (props.soundObject !== null) {
-        props.soundObject.playAsync();
-      }
-    }
-  };
-
-  const pauseMusic = async () => {
-    if (props.soundObject !== null) {
-      props.soundObject.pauseAsync();
-    }
-  }
 
   return (
     <View style={styles.buttonsContainer}>
       <PlayerButton name="backward" size={30} color={'white'} onClick={props.backwardMusic} />
-      <PlayerButton name="play"  size={30} color={'red'} onClick={startMusic} />
-      <PlayerButton name="pause" size={30} color={'white'} onClick={pauseMusic} />
+      <PlayerButton name="play"  size={30} color={'red'} onClick={props.startMusic} />
+      <PlayerButton name="pause" size={30} color={'white'} onClick={props.pauseMusic} />
       <PlayerButton name="forward" size={30} color={'white'} onClick={props.forwardMusic} />
     </View>
   )
