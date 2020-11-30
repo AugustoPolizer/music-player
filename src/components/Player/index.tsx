@@ -6,11 +6,11 @@ import * as MediaLibrary from "expo-media-library";
 import { Music } from "../../types/commons";
 import Timer from "./timer";
 import PlayerButton from './playerButton'
+import Controllers from "./controllers";
 
 const Player: React.FC = () => {
   const [currentMusic, setCurrentMusic] = useState<number>(0);
   const [soundObject, setSoundObject] = useState<Audio.Sound | null>(null);
-  const [permission, setPermission] = useState<PermissionResponse | null>(null);
   const [musics, setMusics] = useState<Array<Music>>([{
     name: "",
     uri: "",
@@ -38,7 +38,7 @@ const Player: React.FC = () => {
 
   useEffect(() => {
     if (musics.length !== 0) {
-      createMusic(musics[0])
+      createSound(musics[0])
         .then((sound) => {
           setSoundObject(sound);
         })
@@ -61,7 +61,7 @@ const Player: React.FC = () => {
   }, [soundObject])
 
   useEffect(() => {
-    createMusic(musics[currentMusic])
+    createSound(musics[currentMusic])
       .then((sound) => {
         setSoundObject(sound);
       })
@@ -76,7 +76,7 @@ const Player: React.FC = () => {
     }
   };
 
-  const createMusic = async (music: Music) => {
+  const createSound = async (music: Music) => {
     const { sound, status } = await Audio.Sound.createAsync(
       { uri: music.uri },
       { progressUpdateIntervalMillis: 1000 }
@@ -85,22 +85,7 @@ const Player: React.FC = () => {
     return sound;
   }
 
-  const startMusic = async () => {
-    const permissionResponse = await getPermission();
-    if (permissionResponse.granted) {
-      if (soundObject !== null) {
-        soundObject.playAsync();
-      }
-    }
-  };
-
-  const pauseMusic = async () => {
-    if (soundObject !== null) {
-      soundObject.pauseAsync();
-    }
-  }
-
-  const fowardMusic = async () => {
+  const forwardMusic = async () => {
     if (currentMusic + 1 < musics.length) {
       setCurrentMusic(currentMusic + 1);
     }
@@ -112,36 +97,18 @@ const Player: React.FC = () => {
     }
   }
 
-  const getPermission = (): Promise<PermissionResponse> => {
-    return new Promise<PermissionResponse>((resolve, reject) => {
-      if (permission === null) {
-        Audio.getPermissionsAsync()
-          .then((response) => {
-            setPermission(response);
-            resolve(response);
-          })
-          .catch((error) => {
-            reject(error);
-          });
-      } else {
-        resolve(permission);
-      }
-    });
-  };
-
   return (
     <View style={styles.displayMusicContainer}>
       <Text style={styles.musicName}>{musics[currentMusic].name}</Text>
-      <View style={styles.buttonsContainer}>
-        <PlayerButton text="play" onClick={startMusic} />
-        <PlayerButton text="pause" onClick={pauseMusic} />
-        <PlayerButton text="foward" onClick={fowardMusic} />
-        <PlayerButton text="backward" onClick={backwardMusic} />
-        <Timer
-          currentTime={100}
-          duration={1000}
-        />
-      </View>
+      <Controllers
+        soundObject={soundObject}
+        forwardMusic={forwardMusic}
+        backwardMusic={backwardMusic}
+      />
+      <Timer
+        currentTime={100}
+        duration={1000}
+      />
     </View>
   );
 };
@@ -152,13 +119,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     margin: 10,
-  },
-
-  buttonsContainer: {
-    display: "flex",
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "center",
   },
 
   musicName: {
