@@ -1,5 +1,5 @@
 import React from "react";
-import { Text, StyleSheet, Image, View } from "react-native";
+import { Text, StyleSheet, Image, View, Dimensions } from "react-native";
 import {
   ScrollView,
   TextInput,
@@ -13,37 +13,64 @@ export type Props = {
 
 const PlayerButton: React.FC<Props> = (props) => {
   return (
-    <ScrollView>
-      <TextInput style={styles.searchInput} placeholder={"Search"}></TextInput>
-      <View style={styles.libraryMusic}>
-      {props.musics.map((music) => {
-        return (
-          <TouchableOpacity style={styles.displayer} key={music.name + music.duration}>
-            <Image
-              style={styles.tinyLogo}
-              source={{ uri: "https://reactnative.dev/img/tiny_logo.png" }}
-            />
-            <Text style={styles.libraryText}>
-              {String(music.name).substring(
-                0,
-                String(music.name).lastIndexOf(".")
-              )}
-            </Text>
-          </TouchableOpacity>
-        );
-      })}
-      </View>
-     
-    </ScrollView>
+    <View style={styles.background}>
+      <TextInput
+        onChangeText={() => {}}
+        style={styles.searchInput}
+        placeholder={"Search"}
+      />
+      <Text style={styles.libraryText}>Library</Text>
+      <ScrollView> 
+        <View style={styles.libraryMusic}>
+          {props.musics.map((music) => {
+            return (
+              <TouchableOpacity
+                style={styles.displayer}
+                key={music.name + music.duration}
+              >
+                <View style={styles.musicLine}>
+                  <Image
+                    style={styles.tinyLogo}
+                    source={{
+                      uri: "https://reactnative.dev/img/tiny_logo.png",
+                    }}
+                  />
+                  <Text style={styles.libraryText}>
+                    {String(music.name).substring(
+                      0,
+                      String(music.name).lastIndexOf(".")
+                    )}
+                  </Text>
+                </View>
+              </TouchableOpacity>
+            );
+          })}
+        </View>
+      </ScrollView>
+    </View>
   );
 };
 
 const styles = StyleSheet.create({
+  musicLine: {
+    alignItems: "center",
+    justifyContent: "flex-start",
+    flexDirection: "row",
+    width: "100%",
+    padding: 10,
+    borderBottomWidth: 2,
+  },
+  background: {
+    padding: 10,
+    backgroundColor: "rgba(0,0,0,0.9)",
+    flex : 1,
+  },
   libraryText: {
     textAlign: "center",
     textTransform: "capitalize",
     fontSize: 18,
-    color: "black",
+    color: "white",
+    flexWrap: "wrap",
     padding: 10,
   },
   searchInput: {
@@ -52,24 +79,19 @@ const styles = StyleSheet.create({
     textAlign: "center",
     borderWidth: 2,
     borderRadius: 20,
-    margin: 10,
+    backgroundColor: "white",
+    marginBottom : 20,
   },
   tinyLogo: {
-    width: 100,
-    height: 100,
+    width: 50,
+    height: 50,
   },
   displayer: {
-    padding : 10,
-    margin : 10,
+    flex: 1,
   },
-  libraryMusic : {
-    flex : 1,
-    alignItems : 'center',
-    justifyContent : 'center',
-    flexDirection : 'row',
-    flexWrap : 'wrap',
-  
-  }
+  libraryMusic: {
+    flex: 1,
+  },
 });
 
 export default PlayerButton;
