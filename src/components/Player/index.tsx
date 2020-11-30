@@ -7,6 +7,7 @@ import Controllers from "./controllers";
 import { Music } from "../../types/commons";
 
 
+
 const Player: React.FC = () => {
   const [currentMusic, setCurrentMusic] = useState<number>(0);
   const [soundObject, setSoundObject] = useState<Audio.Sound | null>(null);

@@ -49,10 +49,10 @@ const Controllers: React.FC<Props> = (props) => {
 
   return (
     <View style={styles.buttonsContainer}>
-      <PlayerButton text="backward" onClick={props.backwardMusic} />
-      <PlayerButton text="play"  onClick={startMusic} />
-      <PlayerButton text="pause" onClick={pauseMusic} />
-      <PlayerButton text="foward" onClick={props.forwardMusic} />
+      <PlayerButton name="backward" size={30}  onClick={props.backwardMusic} />
+      <PlayerButton name="play"  size={30} color={'red'} onClick={startMusic} />
+      <PlayerButton name="pause" size={30} onClick={pauseMusic} />
+      <PlayerButton name="forward" size={30} onClick={props.forwardMusic} />
     </View>
   )
 }
@@ -64,6 +64,10 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
+  button :{
+    padding :10,
+    margin : 10,  
+  }
 })
 
 export default Controllers;
