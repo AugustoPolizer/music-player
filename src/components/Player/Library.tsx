@@ -74,19 +74,21 @@ const styles = StyleSheet.create({
   background: {
     padding: 10,
     flex: 1,
-    
+    backgroundColor : 'rgba(255,255,255,0.4)',
+    borderRadius : 20,
+    borderWidth : 5,
   },
   libraryText: {
     textAlign: "left",
     textTransform: "capitalize",
-    color: "white",
     flexWrap: "wrap",
     padding: 10,
+    color : 'white'
   },
   title : {
     textAlign: "center",
     textTransform: "capitalize",
-    color: "white",
+    color: "black",
     flexWrap: "wrap",
     padding: 10,
     fontSize : 20,
