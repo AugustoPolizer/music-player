@@ -8,10 +8,13 @@ import { Music } from "../../types/commons";
 import Library from "./Library";
 
 const Player: React.FC = () => {
+  const [count, setCount] = useState<number>(0);
   const [currentMusic, setCurrentMusic] = useState<number>(0);
   const [soundObject, setSoundObject] = useState<Audio.Sound | null>(null);
   const [paused, setPaused] = useState<boolean>(false);
-  const [permission, setPermission] = useState<Audio.PermissionResponse | null>(null);
+  const [permission, setPermission] = useState<Audio.PermissionResponse | null>(
+    null
+  );
   const [musics, setMusics] = useState<Array<Music>>([
     {
       name: "",
@@ -19,8 +22,8 @@ const Player: React.FC = () => {
       duration: 0,
     },
   ]);
-
   useEffect(() => {
+    Audio.INTERRUPTION_MODE_ANDROID_DO_NOT_MIX;
     MediaLibrary.requestPermissionsAsync().then((permission) => {
       if (permission.granted) {
         MediaLibrary.getAssetsAsync({
@@ -93,7 +96,6 @@ const Player: React.FC = () => {
     });
   };
 
-
   const statusHandler = (status: any) => {
     if (status.didJustFinish && currentMusic + 1 < musics.length) {
       setCurrentMusic(currentMusic + 1);
@@ -120,29 +122,30 @@ const Player: React.FC = () => {
       setCurrentMusic(currentMusic - 1);
     }
   };
-
-  const startMusic = async () => {
-    const permissionResponse = await getPermission();
-    if (permissionResponse.granted) {
-      if (soundObject !== null) {
-        soundObject.playAsync();
-        setPaused(false)
-      }
-    }
+  const formateToMinutes = (seconds: number) => {
+    return String(
+      (seconds - (seconds %= 60)) / 60 + (9 < seconds ? ":" : ":0") + seconds
+    );
   };
 
+  const startMusic = async () => {
+    timerStart();
+    const permissionResponse = await getPermission();
+
+    soundObject?.playAsync();
+    setPaused(false);
+  };
+  const timerStart = async () => {
+    soundObject?._lastStatusUpdate
+  };
   const pauseMusic = async () => {
     if (soundObject !== null) {
       soundObject.pauseAsync();
-      setPaused(true);
+      setPaused(!paused);
     }
-  }
-
-  const formatMusicName = (name: string) => {
-    return name.substring(0, name.lastIndexOf("."));
   };
 
-
+ 
   return (
     <View style={styles.displayMusicContainer}>
       <View style={styles.scrollView}>
@@ -150,11 +153,16 @@ const Player: React.FC = () => {
       </View>
       <View style={styles.menus}>
         <Text style={styles.musicName}>
-          {formatMusicName(musics[currentMusic].name)}
+          {String(musics[currentMusic].name).substring(
+            0,
+            String(musics[currentMusic].name).lastIndexOf(".")
+          )}
         </Text>
-        <Timer 
-          duration={musics[currentMusic].duration} 
-          paused={paused}  
+        <Timer
+          currentTime={formateToMinutes(count)}
+          durationTime={formateToMinutes(
+            Math.floor(musics[currentMusic].duration)
+          )}
         />
         <Controllers
           soundObject={soundObject}
@@ -173,7 +181,7 @@ const styles = StyleSheet.create({
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
-    backgroundColor: "black",
+    backgroundColor: "#3E4040",
     paddingTop: 20,
   },
 
