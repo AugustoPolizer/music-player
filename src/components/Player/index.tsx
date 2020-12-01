@@ -142,12 +142,12 @@ const Player: React.FC = () => {
       try {
         const status = (JSON.parse(String(soundObject?._lastStatusUpdate)))
         if(status.positionMillis !== NaN && status.positionMillis !== undefined){
-          setCount(Math.floor(status.positionMillis/500))
+          setCount(Math.floor(status.positionMillis/1000))
         }
       } catch (error) {
         
       }
-    },1000)
+    },500)
   };
   const pauseMusic = async () => {
     if (soundObject !== null) {
