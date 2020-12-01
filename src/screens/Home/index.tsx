@@ -30,7 +30,7 @@ const styles = StyleSheet.create({
   playerContainer: {
     height : Dimensions.get('window').height,
     width : Dimensions.get('window').width,
-    paddingTop : 50,
+    paddingTop : 24,
   }
 });
 

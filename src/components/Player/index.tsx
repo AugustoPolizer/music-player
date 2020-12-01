@@ -197,16 +197,13 @@ const styles = StyleSheet.create({
   },
 
   musicName: {
-    fontSize: 20,
     color: "white",
     textTransform: "capitalize",
-    borderBottomWidth: 2,
-    borderColor: "white",
+    flexWrap : 'wrap',
+    margin : 10,
   },
   scrollView: {
-    borderWidth: 2,
     width: "90%",
-    borderRadius: 10,
     height: "80%",
     borderColor : 'rgb(100,100,100)'
   },

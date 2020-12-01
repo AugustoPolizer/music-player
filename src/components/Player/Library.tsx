@@ -22,7 +22,7 @@ const PlayerButton: React.FC<Props> = (props) => {
         style={styles.searchInput}
         placeholder={"Search"}
       />
-      <Text style={styles.libraryText}>Library</Text>
+      <Text style={styles.title}>Library</Text>
       <ScrollView>
         <View style={styles.libraryMusic}>
           {props.musics
@@ -73,17 +73,23 @@ const styles = StyleSheet.create({
   },
   background: {
     padding: 10,
-    backgroundColor : 'rgba(100,100,100,0.4)',
     flex: 1,
     
   },
   libraryText: {
-    textAlign: "center",
+    textAlign: "left",
     textTransform: "capitalize",
-    fontSize: 18,
     color: "white",
     flexWrap: "wrap",
     padding: 10,
+  },
+  title : {
+    textAlign: "center",
+    textTransform: "capitalize",
+    color: "white",
+    flexWrap: "wrap",
+    padding: 10,
+    fontSize : 20,
   },
   searchInput: {
     width: "95%",
