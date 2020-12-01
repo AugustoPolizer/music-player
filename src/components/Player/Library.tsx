@@ -68,13 +68,14 @@ const styles = StyleSheet.create({
     padding: 10,
     borderWidth: 2,
     margin: 10,
-    backgroundColor: "#404040",
+    backgroundColor: "black",
     borderRadius: 10,
   },
   background: {
     padding: 10,
-    backgroundColor: "rgba(0,0,0,0.9)",
+    backgroundColor : 'rgba(100,100,100,0.4)',
     flex: 1,
+    
   },
   libraryText: {
     textAlign: "center",

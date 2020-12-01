@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from "react";
-import { View, Text, StyleSheet } from "react-native";
+import { View, Text, StyleSheet, ImageBackground } from "react-native";
 import * as MediaLibrary from "expo-media-library";
 import { Audio } from "expo-av";
 import Timer from "./timer";
 import Controllers from "./controllers";
 import { Music } from "../../types/commons";
 import Library from "./Library";
+import { Sound } from "expo-av/build/Audio";
 
 const Player: React.FC = () => {
   const [count, setCount] = useState<number>(0);
@@ -112,12 +113,14 @@ const Player: React.FC = () => {
   };
 
   const forwardMusic = async () => {
+    timerStart();
     if (currentMusic + 1 < musics.length) {
       setCurrentMusic(currentMusic + 1);
     }
   };
 
   const backwardMusic = async () => {
+    timerStart();
     if (currentMusic - 1 >= 0) {
       setCurrentMusic(currentMusic - 1);
     }
@@ -131,12 +134,20 @@ const Player: React.FC = () => {
   const startMusic = async () => {
     timerStart();
     const permissionResponse = await getPermission();
-
     soundObject?.playAsync();
     setPaused(false);
   };
   const timerStart = async () => {
-    soundObject?._lastStatusUpdate
+    setInterval(()=>{
+      try {
+        const status = (JSON.parse(String(soundObject?._lastStatusUpdate)))
+        if(status.positionMillis !== NaN && status.positionMillis !== undefined){
+          setCount(Math.floor(status.positionMillis/500))
+        }
+      } catch (error) {
+        
+      }
+    },1000)
   };
   const pauseMusic = async () => {
     if (soundObject !== null) {
@@ -144,10 +155,9 @@ const Player: React.FC = () => {
       setPaused(!paused);
     }
   };
-
  
   return (
-    <View style={styles.displayMusicContainer}>
+    <ImageBackground style={styles.displayMusicContainer} source={{uri: "https://static.vecteezy.com/system/resources/previews/001/337/734/non_2x/geometric-gradient-black-background-free-vector.jpg" }}>
       <View style={styles.scrollView}>
         <Library musics={musics} />
       </View>
@@ -172,7 +182,7 @@ const Player: React.FC = () => {
           startMusic={startMusic}
         />
       </View>
-    </View>
+    </ImageBackground>
   );
 };
 
@@ -183,6 +193,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     backgroundColor: "#3E4040",
     paddingTop: 20,
+   
   },
 
   musicName: {
@@ -197,7 +208,7 @@ const styles = StyleSheet.create({
     width: "90%",
     borderRadius: 10,
     height: "80%",
-    backgroundColor: "white",
+    borderColor : 'rgb(100,100,100)'
   },
   menus: {
     alignItems: "center",
@@ -205,6 +216,12 @@ const styles = StyleSheet.create({
     position: "relative",
     height: "20%",
     width: "100%",
+  },
+  image: {
+    flex: 1,
+    resizeMode: "cover",
+    justifyContent: "center",
+   
   },
 });
 
