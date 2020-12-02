@@ -129,12 +129,14 @@ const Player: React.FC = () => {
   const forwardMusic = async () => {
     if (currentMusic + 1 < musics.length) {
       setCurrentMusic(currentMusic + 1);
+      changeMusic(musics[currentMusic+1])
     }
   };
 
   const backwardMusic = async () => {
     if (currentMusic - 1 >= 0) {
       setCurrentMusic(currentMusic - 1);
+      changeMusic(musics[currentMusic-1])
     }
   };
 
