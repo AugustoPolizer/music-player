@@ -17,7 +17,6 @@ const Search: React.FC<Props> = (props) => {
       }}>
         <Icon name="search" size={20} color="white" />
       </TouchableOpacity>
-
       <TextInput
         onChangeText={props.onSearch}
         style={styles.searchInput}
