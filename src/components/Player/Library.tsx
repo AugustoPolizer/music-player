@@ -13,8 +13,6 @@ export type Props = {
   changeMusic: (music:Music,number : number) => void
 };
 
-
-
 const PlayerButton: React.FC<Props> = (props) => {
   const [search, setSearch] = useState<string>("");
   return (

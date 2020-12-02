@@ -180,10 +180,7 @@ const Player: React.FC = () => {
     <View>
       <ImageBackground
         style={styles.displayMusicContainer}
-        source={{
-          uri:
-            "https://static.vecteezy.com/system/resources/previews/001/337/734/non_2x/geometric-gradient-black-background-free-vector.jpg",
-        }}
+        source={require("../../../assets/background.png")}
       >
         <View style={styles.scrollView}>
           <Library musics={musics} changeMusic={changeMusic} />
