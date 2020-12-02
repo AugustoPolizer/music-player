@@ -9,6 +9,7 @@ import { Music } from "../../types/commons";
 
 export type Props = {
   musics: Music[];
+  changeMusic: (music:Music) => void
 };
 
 const PlayerButton: React.FC<Props> = (props) => {
@@ -36,7 +37,7 @@ const PlayerButton: React.FC<Props> = (props) => {
                 <TouchableOpacity
                   style={styles.displayer}
                   key={music.name + music.duration}
-                 
+                  onPress={()=>{props.changeMusic(music)}}
                 >
                   <View style={styles.musicLine}>
                     <Image
@@ -73,11 +74,10 @@ const styles = StyleSheet.create({
     borderRadius: 10,
   },
   background: {
-    padding: 10,
+    padding: 20,
     flex: 1,
-    backgroundColor : 'rgba(255,255,255,0.4)',
-    borderRadius : 20,
-    borderWidth : 2,
+    backgroundColor : 'rgba(125,125,125,0.2)',
+    borderRadius : 30,
   },
   libraryText: {
     textAlign: "left",
@@ -90,10 +90,10 @@ const styles = StyleSheet.create({
   title : {
     textAlign: "center",
     textTransform: "capitalize",
-    color: "black",
     flexWrap: "wrap",
     padding: 10,
     fontSize : 20,
+    color : 'white',
   },
   searchInput: {
     width: "95%",

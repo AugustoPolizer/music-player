@@ -9,6 +9,8 @@ import Library from "./Library";
 
 const Player: React.FC = () => {
   const [count, setCount] = useState<number>(0);
+  const [musicName,setMusicName] = useState<String>("");
+  const [durationTime,setDurationTIme] = useState<number>(0)
   const [currentMusic, setCurrentMusic] = useState<number>(0);
   const [soundObject, setSoundObject] = useState<Audio.Sound | null>(null);
   const [paused, setPaused] = useState<boolean>(false);
@@ -49,6 +51,8 @@ const Player: React.FC = () => {
     if (musics.length !== 0) {
       createSound(musics[0])
         .then((sound) => {
+          setMusicName(musics[0].name)
+          setDurationTIme(musics[0].duration)
           setSoundObject(sound);
         })
         .catch((error) => {
@@ -78,7 +82,18 @@ const Player: React.FC = () => {
         setSoundObject(null);
       });
   }, [currentMusic]);
-
+  
+  const changeMusic = (music : Music)=>{
+    createSound(music)
+    .then((sound) => {
+      setSoundObject(sound);
+      setMusicName(music.name)
+      setDurationTIme(music.duration)
+    })
+    .catch((error) => {
+      setSoundObject(null);
+    });
+  }
   const getPermission = (): Promise<Audio.PermissionResponse> => {
     return new Promise<Audio.PermissionResponse>((resolve, reject) => {
       if (permission === null) {
@@ -135,16 +150,17 @@ const Player: React.FC = () => {
     setPaused(false);
   };
   const timerStart = async () => {
-    setInterval(()=>{
+    setInterval(() => {
       try {
-        const status = (JSON.parse(String(soundObject?._lastStatusUpdate)))
-        if(status.positionMillis !== NaN && status.positionMillis !== undefined){
-          setCount(Math.floor(status.positionMillis/1000))
+        const status = JSON.parse(String(soundObject?._lastStatusUpdate));
+        if (
+          status.positionMillis !== NaN &&
+          status.positionMillis !== undefined
+        ) {
+          setCount(Math.floor(status.positionMillis / 1000));
         }
-      } catch (error) {
-        
-      }
-    },500)
+      } catch (error) {}
+    }, 500);
   };
   const pauseMusic = async () => {
     if (soundObject !== null) {
@@ -152,34 +168,43 @@ const Player: React.FC = () => {
       setPaused(!paused);
     }
   };
- 
+
   return (
-    <ImageBackground style={styles.displayMusicContainer} source={{uri: "https://static.vecteezy.com/system/resources/previews/001/337/734/non_2x/geometric-gradient-black-background-free-vector.jpg" }}>
-      <View style={styles.scrollView}>
-        <Library musics={musics}/>
-      </View>
+    <View>
+      <ImageBackground
+        style={styles.displayMusicContainer}
+        source={{
+          uri:
+            "https://static.vecteezy.com/system/resources/previews/001/337/734/non_2x/geometric-gradient-black-background-free-vector.jpg",
+        }}
+      >
+        <View style={styles.scrollView}>
+          <Library musics={musics} changeMusic={changeMusic}/>
+        </View>
+        
+      </ImageBackground>
       <View style={styles.menus}>
-        <Text style={styles.musicName}>
-          {String(musics[currentMusic].name).substring(
-            0,
-            String(musics[currentMusic].name).lastIndexOf(".")
-          )}
-        </Text>
-        <Timer
-          currentTime={formateToMinutes(count)}
-          durationTime={formateToMinutes(
-            Math.floor(musics[currentMusic].duration)
-          )}
-        />
-        <Controllers
-          soundObject={soundObject}
-          forwardMusic={forwardMusic}
-          backwardMusic={backwardMusic}
-          pauseMusic={pauseMusic}
-          startMusic={startMusic}
-        />
-      </View>
-    </ImageBackground>
+          <Text style={styles.musicName}>
+            {String(musicName).substring(
+              0,
+              String(musicName).lastIndexOf(".")
+            )}
+          </Text>
+          <Timer
+            currentTime={formateToMinutes(count)}
+            durationTime={formateToMinutes(
+              Math.floor(durationTime)
+            )}
+          />
+          <Controllers
+            soundObject={soundObject}
+            forwardMusic={forwardMusic}
+            backwardMusic={backwardMusic}
+            pauseMusic={pauseMusic}
+            startMusic={startMusic}
+          />
+        </View>
+    </View>
   );
 };
 
@@ -189,20 +214,18 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     backgroundColor: "#3E4040",
-    paddingTop: 20,
-   
   },
 
   musicName: {
     color: "white",
     textTransform: "capitalize",
-    flexWrap : 'wrap',
-    margin : 10,
+    flexWrap: "wrap",
+    margin: 10,
   },
   scrollView: {
     width: "90%",
     height: "80%",
-    borderColor : 'rgb(100,100,100)'
+    borderColor: "rgb(100,100,100)",
   },
   menus: {
     alignItems: "center",
@@ -210,12 +233,15 @@ const styles = StyleSheet.create({
     position: "relative",
     height: "20%",
     width: "100%",
+    backgroundColor : 'black',
+    borderTopColor : 'white',
+    borderTopWidth : 2,
+
   },
   image: {
     flex: 1,
     resizeMode: "cover",
     justifyContent: "center",
-   
   },
 });
 
