@@ -6,7 +6,6 @@ import Timer from "./timer";
 import Controllers from "./controllers";
 import { Music } from "../../types/commons";
 import Library from "./Library";
-import { Sound } from "expo-av/build/Audio";
 
 const Player: React.FC = () => {
   const [count, setCount] = useState<number>(0);
@@ -103,7 +102,7 @@ const Player: React.FC = () => {
     }
   };
 
-  const createSound = async (music: Music) => {
+  const createSound = async (music: Music): Promise<Audio.Sound> => {
     const { sound, status } = await Audio.Sound.createAsync(
       { uri: music.uri },
       { progressUpdateIntervalMillis: 1000 },
@@ -125,9 +124,13 @@ const Player: React.FC = () => {
       setCurrentMusic(currentMusic - 1);
     }
   };
-  const formateToMinutes = (seconds: number) => {
+
+  const formateToMinutes = (time: number): string => {
+    let seconds = time;
+    let minutes = Math.floor(seconds / 60);
+    seconds = seconds % 60;
     return String(
-      (seconds - (seconds %= 60)) / 60 + (9 < seconds ? ":" : ":0") + seconds
+      minutes.toString().padStart(2, '0') + ':' + seconds.toString().padStart(2, '0')
     );
   };
 
@@ -137,6 +140,7 @@ const Player: React.FC = () => {
     soundObject?.playAsync();
     setPaused(false);
   };
+
   const timerStart = async () => {
     setInterval(()=>{
       try {
@@ -147,8 +151,9 @@ const Player: React.FC = () => {
       } catch (error) {
         
       }
-    },500)
+    }, 500)
   };
+
   const pauseMusic = async () => {
     if (soundObject !== null) {
       soundObject.pauseAsync();
