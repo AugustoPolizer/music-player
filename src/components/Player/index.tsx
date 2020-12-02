@@ -6,7 +6,6 @@ import Timer from "./timer";
 import Controllers from "./controllers";
 import { Music } from "../../types/commons";
 import Library from "./Library";
-import { Sound } from "expo-av/build/Audio";
 
 const Player: React.FC = () => {
   const [count, setCount] = useState<number>(0);
@@ -113,14 +112,12 @@ const Player: React.FC = () => {
   };
 
   const forwardMusic = async () => {
-    timerStart();
     if (currentMusic + 1 < musics.length) {
       setCurrentMusic(currentMusic + 1);
     }
   };
 
   const backwardMusic = async () => {
-    timerStart();
     if (currentMusic - 1 >= 0) {
       setCurrentMusic(currentMusic - 1);
     }
@@ -159,7 +156,7 @@ const Player: React.FC = () => {
   return (
     <ImageBackground style={styles.displayMusicContainer} source={{uri: "https://static.vecteezy.com/system/resources/previews/001/337/734/non_2x/geometric-gradient-black-background-free-vector.jpg" }}>
       <View style={styles.scrollView}>
-        <Library musics={musics} />
+        <Library musics={musics}/>
       </View>
       <View style={styles.menus}>
         <Text style={styles.musicName}>
