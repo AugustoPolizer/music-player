@@ -111,7 +111,7 @@ const styles = StyleSheet.create({
     borderColor: "white",
   },
   displayer: {
-    flex: 1,
+    width : '100%',
   },
   libraryMusic: {
     flex: 1,
