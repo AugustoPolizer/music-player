@@ -118,7 +118,7 @@ const Player: React.FC = () => {
 
   const statusHandler = (status: any) => {
     if (status.didJustFinish && currentMusic + 1 < musics.length) {
-      setCurrentMusic(currentMusic + 1);
+      changeMusic(musics[currentMusic+1],currentMusic + 1)
     }
   };
 
@@ -135,7 +135,7 @@ const Player: React.FC = () => {
     if (currentMusic + 1 < musics.length) {
       changeMusic(musics[currentMusic+1],currentMusic + 1)
     }else{
-      changeMusic(musics[currentMusic],currentMusic)
+      changeMusic(musics[0],0)
     }
   };
 
@@ -143,7 +143,7 @@ const Player: React.FC = () => {
     if (currentMusic - 1 >= 0) {
       changeMusic(musics[currentMusic-1],currentMusic - 1)
     }else{
-      changeMusic(musics[currentMusic],currentMusic)
+      changeMusic(musics[musics.length-1],musics.length-1)
     }
    
   };
