@@ -70,7 +70,7 @@ const styles = StyleSheet.create({
     padding: 10,
     borderWidth: 2,
     margin: 10,
-    backgroundColor: "black",
+    backgroundColor: "rgba(100,100,100,0.4)",
     borderRadius: 10,
   },
   background: {
