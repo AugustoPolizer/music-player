@@ -29,7 +29,7 @@ const ProgressBar: React.FC<Props> = (props) => {
             (Dimensions.get('screen').width * 0.8)*1000)
         }}>
         <View   style={{
-            backgroundColor: `rgb(${150+( props.currentTime / props.durationTime * 105)},${0},${0})`,
+            backgroundColor: `rgb(${150+( props.currentTime / props.durationTime * 105)},${0+( props.currentTime / props.durationTime * 255)},${0})`,
             width: `${(props.currentTime / props.durationTime) * 100}%`,
             borderRadius : 5,
           }}
@@ -46,7 +46,7 @@ const ProgressBar: React.FC<Props> = (props) => {
 const styles = StyleSheet.create({
   textColor: {
     color: "black",
-    fontSize: 14,
+    fontSize: 12,
     width : Dimensions.get("screen").width * 0.8,
     textAlign : 'center',
     borderRadius : 5,
