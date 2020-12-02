@@ -36,6 +36,7 @@ const PlayerButton: React.FC<Props> = (props) => {
                 <TouchableOpacity
                   style={styles.displayer}
                   key={music.name + music.duration}
+                 
                 >
                   <View style={styles.musicLine}>
                     <Image
@@ -76,14 +77,15 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor : 'rgba(255,255,255,0.4)',
     borderRadius : 20,
-    borderWidth : 5,
+    borderWidth : 2,
   },
   libraryText: {
     textAlign: "left",
     textTransform: "capitalize",
     flexWrap: "wrap",
     padding: 10,
-    color : 'white'
+    color : 'white',
+    marginRight : 20,
   },
   title : {
     textAlign: "center",
@@ -97,7 +99,6 @@ const styles = StyleSheet.create({
     width: "95%",
     height: 40,
     textAlign: "center",
-    borderWidth: 2,
     borderRadius: 20,
     backgroundColor: "white",
     marginBottom: 20,
@@ -110,7 +111,7 @@ const styles = StyleSheet.create({
     borderColor: "white",
   },
   displayer: {
-    flex: 1,
+    width : '100%',
   },
   libraryMusic: {
     flex: 1,
