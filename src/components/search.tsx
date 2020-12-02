@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { TextInput, TouchableOpacity, View, StyleSheet } from 'react-native';
+import { TextInput, TouchableOpacity, View, StyleSheet, TextInputComponent } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 
 export type Props = {
@@ -7,29 +7,48 @@ export type Props = {
 }
 
 const Search: React.FC<Props> = (props) => {
-  const [isSearching, setIsSearching] = useState<Boolean>(false);
+  const [textInput, setTextInput] = useState<TextInput>();
+
   return (
-    <View>
-      <TouchableOpacity onPress={() => setIsSearching(true)}>
+    <View style={styles.searchContainer}>
+      <TouchableOpacity onPress={() => {
+        if (textInput)
+          textInput.focus();
+      }}>
         <Icon name="search" size={20} color="white" />
       </TouchableOpacity>
-      {isSearching &&
-        <TextInput
-          onChangeText={props.onSearch}
-          style={styles.searchInput}
-        />
-      }
+
+      <TextInput
+        onChangeText={props.onSearch}
+        style={styles.searchInput}
+        ref={(input) => {
+          if (input)
+            setTextInput(input)
+        }}
+        placeholder="Search"
+        placeholderTextColor="white"
+      />
+
 
     </View>
   )
 }
 
 const styles = StyleSheet.create({
+  searchContainer: {
+    width: "100%",
+    flexDirection: "row",
+    paddingBottom: 10
+  },
   searchInput: {
     textAlign: "center",
+    width: "90%",
+    marginLeft: 10,
+    backgroundColor: "rgba(100,100,100,0.1)",
+    borderRadius: 20,
     borderBottomWidth: 2,
     borderBottomColor: "white",
-    color: "white"
+    color: "white",
   },
 })
 
