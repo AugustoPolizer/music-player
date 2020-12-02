@@ -5,12 +5,13 @@ import { Audio } from "expo-av";
 import Timer from "./timer";
 import Controllers from "./controllers";
 import { Music } from "../../types/commons";
-import Library from "./Library";
+import Library from "./library";
+import ProgressBar from "./progressBar";
 
 const Player: React.FC = () => {
   const [count, setCount] = useState<number>(0);
-  const [musicName,setMusicName] = useState<String>("");
-  const [durationTime,setDurationTIme] = useState<number>(0)
+  const [musicName, setMusicName] = useState<String>("");
+  const [durationTime, setDurationTIme] = useState<number>(0);
   const [currentMusic, setCurrentMusic] = useState<number>(0);
   const [soundObject, setSoundObject] = useState<Audio.Sound | null>(null);
   const [paused, setPaused] = useState<boolean>(false);
@@ -51,8 +52,8 @@ const Player: React.FC = () => {
     if (musics.length !== 0) {
       createSound(musics[0])
         .then((sound) => {
-          setMusicName(musics[0].name)
-          setDurationTIme(musics[0].duration)
+          setMusicName(musics[0].name);
+          setDurationTIme(musics[0].duration);
           setSoundObject(sound);
         })
         .catch((error) => {
@@ -82,18 +83,18 @@ const Player: React.FC = () => {
         setSoundObject(null);
       });
   }, [currentMusic]);
-  
-  const changeMusic = (music : Music)=>{
+
+  const changeMusic = (music: Music) => {
     createSound(music)
-    .then((sound) => {
-      setSoundObject(sound);
-      setMusicName(music.name)
-      setDurationTIme(music.duration)
-    })
-    .catch((error) => {
-      setSoundObject(null);
-    });
-  }
+      .then((sound) => {
+        setSoundObject(sound);
+        setMusicName(music.name);
+        setDurationTIme(music.duration);
+      })
+      .catch((error) => {
+        setSoundObject(null);
+      });
+  };
   const getPermission = (): Promise<Audio.PermissionResponse> => {
     return new Promise<Audio.PermissionResponse>((resolve, reject) => {
       if (permission === null) {
@@ -129,24 +130,15 @@ const Player: React.FC = () => {
   const forwardMusic = async () => {
     if (currentMusic + 1 < musics.length) {
       setCurrentMusic(currentMusic + 1);
-      changeMusic(musics[currentMusic+1])
+      changeMusic(musics[currentMusic + 1]);
     }
   };
 
   const backwardMusic = async () => {
     if (currentMusic - 1 >= 0) {
       setCurrentMusic(currentMusic - 1);
-      changeMusic(musics[currentMusic-1])
+      changeMusic(musics[currentMusic - 1]);
     }
-  };
-
-  const formateToMinutes = (time: number): string => {
-    let seconds = time;
-    let minutes = Math.floor(seconds / 60);
-    seconds = seconds % 60;
-    return String(
-      minutes.toString().padStart(2, '0') + ':' + seconds.toString().padStart(2, '0')
-    );
   };
 
   const startMusic = async () => {
@@ -187,31 +179,27 @@ const Player: React.FC = () => {
         }}
       >
         <View style={styles.scrollView}>
-          <Library musics={musics} changeMusic={changeMusic}/>
+          <Library musics={musics} changeMusic={changeMusic} />
         </View>
-        
       </ImageBackground>
       <View style={styles.menus}>
-          <Text style={styles.musicName}>
-            {String(musicName).substring(
-              0,
-              String(musicName).lastIndexOf(".")
-            )}
-          </Text>
-          <Timer
-            currentTime={formateToMinutes(count)}
-            durationTime={formateToMinutes(
-              Math.floor(durationTime)
-            )}
-          />
-          <Controllers
-            soundObject={soundObject}
-            forwardMusic={forwardMusic}
-            backwardMusic={backwardMusic}
-            pauseMusic={pauseMusic}
-            startMusic={startMusic}
-          />
-        </View>
+        <Text style={styles.musicName}>
+         
+          {String(musicName).substring(0, String(musicName).lastIndexOf("."))}
+        </Text>
+        <ProgressBar currentTime={count} durationTime={Math.floor(durationTime)}/>
+   {/*      <Timer
+          currentTime={formateToMinutes(count)}
+          durationTime={formateToMinutes(Math.floor(durationTime))}
+        /> */}
+        <Controllers
+          soundObject={soundObject}
+          forwardMusic={forwardMusic}
+          backwardMusic={backwardMusic}
+          pauseMusic={pauseMusic}
+          startMusic={startMusic}
+        />
+      </View>
     </View>
   );
 };
@@ -241,10 +229,9 @@ const styles = StyleSheet.create({
     position: "relative",
     height: "20%",
     width: "100%",
-    backgroundColor : 'black',
-    borderTopColor : 'white',
-    borderTopWidth : 2,
-
+    backgroundColor: "black",
+    borderTopColor: "white",
+    borderTopWidth: 2,
   },
   image: {
     flex: 1,

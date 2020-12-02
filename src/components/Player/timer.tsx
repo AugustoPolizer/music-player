@@ -14,16 +14,20 @@ const Timer: React.FC<Props> = (props) => {
   
 
   return (
-    <View>
+    <View style={styles.body}>
       <Text style={styles.textColor}>{props.currentTime} - {props.durationTime}</Text>
     </View>
   )
 }
 const styles = StyleSheet.create({
+  body:{
+    position : 'absolute',
+  },
   textColor: {
-    color: 'white',
+    color: 'black',
     margin: 5,
     fontSize : 12,
+    textAlign : 'center',
   }
 });
 

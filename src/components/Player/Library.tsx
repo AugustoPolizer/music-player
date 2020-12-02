@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Text, StyleSheet, Image, View, Dimensions } from "react-native";
+import { Text, StyleSheet, Image, View } from "react-native";
 import {
   ScrollView,
   TextInput,
@@ -76,7 +76,6 @@ const styles = StyleSheet.create({
   background: {
     padding: 20,
     flex: 1,
-    backgroundColor : 'rgba(125,125,125,0.2)',
     borderRadius : 30,
   },
   libraryText: {
