@@ -95,6 +95,9 @@ const Player: React.FC = () => {
         setSoundObject(null);
       });
   };
+  const changeMusicTime = (position : number) =>{
+    soundObject?.setPositionAsync(position)
+  }
   const getPermission = (): Promise<Audio.PermissionResponse> => {
     return new Promise<Audio.PermissionResponse>((resolve, reject) => {
       if (permission === null) {
@@ -187,7 +190,7 @@ const Player: React.FC = () => {
          
           {String(musicName).substring(0, String(musicName).lastIndexOf("."))}
         </Text>
-        <ProgressBar currentTime={count} durationTime={Math.floor(durationTime)}/>
+        <ProgressBar changeMusicTime={changeMusicTime} currentTime={count} durationTime={Math.floor(durationTime)}/>
    {/*      <Timer
           currentTime={formateToMinutes(count)}
           durationTime={formateToMinutes(Math.floor(durationTime))}

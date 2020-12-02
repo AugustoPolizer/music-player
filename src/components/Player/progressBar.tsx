@@ -4,6 +4,7 @@ import { Text, View, StyleSheet, Dimensions } from "react-native";
 export type Props = {
   currentTime: number;
   durationTime: number;
+  changeMusicTime : Function,
 };
 
 export type Time = {};
@@ -22,11 +23,16 @@ const formateToMinutes = (time: number): string => {
 const ProgressBar: React.FC<Props> = (props) => {
   return (
     <View style={styles.body}>
-      <View style={styles.progressBar}>
+      <View style={styles.progressBar}
+        onTouchStart={(e) => {
+          props.changeMusicTime(e.nativeEvent.locationX*props.durationTime/
+            (Dimensions.get('screen').width * 0.8)*1000)
+        }}>
         <View   style={{
             backgroundColor: "red",
             width: `${(props.currentTime / props.durationTime) * 100}%`,
-          }}>
+          }}
+        >
            <Text style={styles.textColor}>
             {formateToMinutes(props.currentTime)} -{" "}
             {formateToMinutes(props.durationTime)}
