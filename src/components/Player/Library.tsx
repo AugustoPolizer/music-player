@@ -5,6 +5,7 @@ import {
   TextInput,
   TouchableOpacity,
 } from "react-native-gesture-handler";
+import Search from '../search';
 import { Music } from "../../types/commons";
 
 export type Props = {
@@ -12,17 +13,13 @@ export type Props = {
   changeMusic: (music:Music,number : number) => void
 };
 
+
+
 const PlayerButton: React.FC<Props> = (props) => {
-  const [search, setSearch] = useState("");
+  const [search, setSearch] = useState<string>("");
   return (
     <View style={styles.background}>
-      <TextInput
-        onChangeText={(search) => {
-          setSearch(search);
-        }}
-        style={styles.searchInput}
-        placeholder={"Search"}
-      />
+      <Search onSearch={(newSearch: string) => setSearch(newSearch)}/>
       <ScrollView>
         <View style={styles.libraryMusic}>
           {props.musics
@@ -67,9 +64,9 @@ const styles = StyleSheet.create({
     justifyContent: "flex-start",
     flexDirection: "row",
     padding: 10,
-    borderWidth: 2,
+    // borderWidth: 2,
     margin: 10,
-    backgroundColor: "rgba(100,100,100,0.4)",
+    backgroundColor: "rgba(100,100,100,0.1)",
     borderRadius: 10,
   },
   background: {
@@ -91,14 +88,6 @@ const styles = StyleSheet.create({
     padding: 10,
     fontSize : 20,
     color : 'white',
-  },
-  searchInput: {
-    width: "95%",
-    height: 40,
-    textAlign: "center",
-    borderRadius: 20,
-    backgroundColor: "white",
-    marginBottom: 20,
   },
   tinyLogo: {
     width: 50,

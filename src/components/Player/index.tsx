@@ -5,7 +5,7 @@ import { Audio } from "expo-av";
 import Timer from "./timer";
 import Controllers from "./controllers";
 import { Music } from "../../types/commons";
-import Library from "./library";
+import Library from "./Library";
 import ProgressBar from "./progressBar";
 
 const Player: React.FC = () => {
