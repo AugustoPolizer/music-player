@@ -9,7 +9,7 @@ import { Music } from "../../types/commons";
 
 export type Props = {
   musics: Music[];
-  changeMusic: (music:Music) => void
+  changeMusic: (music:Music,number : number) => void
 };
 
 const PlayerButton: React.FC<Props> = (props) => {
@@ -23,7 +23,6 @@ const PlayerButton: React.FC<Props> = (props) => {
         style={styles.searchInput}
         placeholder={"Search"}
       />
-      <Text style={styles.title}>Library</Text>
       <ScrollView>
         <View style={styles.libraryMusic}>
           {props.musics
@@ -37,7 +36,7 @@ const PlayerButton: React.FC<Props> = (props) => {
                 <TouchableOpacity
                   style={styles.displayer}
                   key={music.name + music.duration}
-                  onPress={()=>{props.changeMusic(music)}}
+                  onPress={()=>{props.changeMusic(music,props.musics.indexOf(music))}}
                 >
                   <View style={styles.musicLine}>
                     <Image
@@ -74,7 +73,6 @@ const styles = StyleSheet.create({
     borderRadius: 10,
   },
   background: {
-    padding: 20,
     flex: 1,
     borderRadius : 30,
   },
@@ -105,9 +103,7 @@ const styles = StyleSheet.create({
   tinyLogo: {
     width: 50,
     height: 50,
-    borderWidth: 2,
     borderRadius: 10,
-    borderColor: "white",
   },
   displayer: {
     width : '100%',

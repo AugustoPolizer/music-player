@@ -84,9 +84,10 @@ const Player: React.FC = () => {
       });
   }, [currentMusic]);
 
-  const changeMusic = (music: Music) => {
+  const changeMusic = (music: Music,index : number) => {
     createSound(music)
       .then((sound) => {
+        setCurrentMusic(index)
         setSoundObject(sound);
         setMusicName(music.name);
         setDurationTIme(music.duration);
@@ -130,18 +131,21 @@ const Player: React.FC = () => {
     return sound;
   };
 
-  const forwardMusic = async () => {
+  const forwardMusic = () => {
     if (currentMusic + 1 < musics.length) {
-      setCurrentMusic(currentMusic + 1);
-      changeMusic(musics[currentMusic + 1]);
+      changeMusic(musics[currentMusic+1],currentMusic + 1)
+    }else{
+      changeMusic(musics[currentMusic],currentMusic)
     }
   };
 
-  const backwardMusic = async () => {
+  const backwardMusic = () => {
     if (currentMusic - 1 >= 0) {
-      setCurrentMusic(currentMusic - 1);
-      changeMusic(musics[currentMusic - 1]);
+      changeMusic(musics[currentMusic-1],currentMusic - 1)
+    }else{
+      changeMusic(musics[currentMusic],currentMusic)
     }
+   
   };
 
   const startMusic = async () => {
