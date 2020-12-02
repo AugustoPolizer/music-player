@@ -74,16 +74,6 @@ const Player: React.FC = () => {
     };
   }, [soundObject]);
 
-  useEffect(() => {
-    createSound(musics[currentMusic])
-      .then((sound) => {
-        setSoundObject(sound);
-      })
-      .catch((error) => {
-        setSoundObject(null);
-      });
-  }, [currentMusic]);
-
   const changeMusic = (music: Music,index : number) => {
     createSound(music)
       .then((sound) => {
