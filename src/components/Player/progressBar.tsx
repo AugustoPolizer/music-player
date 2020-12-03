@@ -35,11 +35,7 @@ const ProgressBar: React.FC<Props> = (props) => {
       >
         <View
           style={{
-            backgroundColor: `rgb(${
-              0 + (props.currentTime / props.durationTime) * 255
-            },${0 + (props.currentTime / props.durationTime) * 255},${
-              255 - (props.currentTime / props.durationTime) * 255
-            })`,
+            backgroundColor: 'red',
             width: `${(props.currentTime / props.durationTime) * 100}%`,
             borderRadius: 50,
           }}

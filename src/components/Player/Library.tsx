@@ -30,7 +30,7 @@ const PlayerButton: React.FC<Props> = (props) => {
               return (
                 <TouchableOpacity
                   style={styles.displayer}
-                  key={music.name + music.duration}
+                  key={music.name + music.duration + props.musics.indexOf(music)}
                   onPress={()=>{props.changeMusic(music,props.musics.indexOf(music))}}
                 >
                   <View style={styles.musicLine}>
