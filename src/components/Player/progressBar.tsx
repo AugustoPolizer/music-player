@@ -37,7 +37,6 @@ const ProgressBar: React.FC<Props> = (props) => {
           style={{
             backgroundColor: 'red',
             width: `${(props.currentTime / props.durationTime) * 100}%`,
-            borderRadius: 50,
           }}
         >
           <Text style={styles.textColor}>
@@ -55,13 +54,11 @@ const styles = StyleSheet.create({
     fontSize: 12,
     width: Dimensions.get("screen").width * 0.8,
     textAlign: "center",
-    borderRadius: 20,
     fontWeight: "bold",
   },
   progressBar: {
     width: Dimensions.get("screen").width * 0.8,
     backgroundColor: "white",
-    borderRadius: 20,
   },
   body: { borderRadius: 5, flex: 1 },
 });
