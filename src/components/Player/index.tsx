@@ -234,7 +234,7 @@ const Player: React.FC = () => {
         source={require("../../../assets/background.png")}
       >
         <View style={styles.scrollView}>
-          <Library musics={musics} changeMusic={changeMusic} />
+          <Library musics={musics} changeMusic={changeMusic} musicName={musics[currentMusic].name}/>
         </View>
       </ImageBackground>
       <View style={styles.menus}>

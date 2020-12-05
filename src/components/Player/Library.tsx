@@ -11,6 +11,7 @@ export type ItemProps = {
   music: Music
   index: number
   changeMusic: (music: Music, number: number) => void
+  current : boolean
 }
 
 const RenderMusicItem: React.FC<ItemProps> = (props) => {
@@ -19,7 +20,7 @@ const RenderMusicItem: React.FC<ItemProps> = (props) => {
       style={styles.displayer}
       onPress={() => { props.changeMusic(props.music, props.index) }}
     >
-      <View style={styles.musicLine}>
+      <View style={props.current ? styles.musicLineActive : styles.musicLine}>
         <Image
           style={styles.tinyLogo}
           source={{
@@ -37,9 +38,10 @@ const RenderMusicItem: React.FC<ItemProps> = (props) => {
   );
 }
 
-export type Props = {
+ export type Props = {
   musics: Music[]
   changeMusic: (music: Music, number: number) => void
+  musicName : string
 };
 
 const PlayerButton: React.FC<Props> = (props) => {
@@ -67,9 +69,15 @@ const PlayerButton: React.FC<Props> = (props) => {
       <FlatList
         style={styles.libraryMusic}
         data={musics}
+        numColumns = {1}
+        initialNumToRender={20}
         renderItem={({item, index}) => {
-          return <RenderMusicItem music={item} changeMusic={props.changeMusic} index={index}/>
-        }}
+          return (
+          item.name == props.musicName ? 
+          <RenderMusicItem  music={item} current={true} changeMusic={props.changeMusic} index={index}/> 
+          :  
+          <RenderMusicItem  music={item} current={false} changeMusic={props.changeMusic} index={index}/>
+          )}}
         keyExtractor={item => item.uri}
         extraData={musics}
       />
@@ -78,6 +86,16 @@ const PlayerButton: React.FC<Props> = (props) => {
 };
 
 const styles = StyleSheet.create({
+  musicLineActive: {
+    alignItems: "center",
+    justifyContent: "flex-start",
+    flexDirection: "row",
+    padding: 10,
+    // borderWidth: 2,
+    margin: 10,
+    backgroundColor: "rgba(255,255,255,0.3)",
+    borderRadius: 10,
+  },
   musicLine: {
     alignItems: "center",
     justifyContent: "flex-start",
