@@ -18,7 +18,7 @@ const RenderMusicItem: React.FC<ItemProps> = (props) => {
   return (
     <TouchableOpacity
       style={styles.displayer}
-      onPress={() => { props.changeMusic(props.music, props.index) }}
+      onPress={() => {props.changeMusic(props.music, props.index)}}
     >
       <View style={props.current ? styles.musicLineActive : styles.musicLine}>
         <Image
@@ -28,7 +28,7 @@ const RenderMusicItem: React.FC<ItemProps> = (props) => {
           }}
         />
         <Text style={styles.libraryText}>
-          {props.music.name.substring(
+          {props.index +' - '+ props.music.name.substring(
             0,
             props.music.name.lastIndexOf(".")
           )}
@@ -45,14 +45,14 @@ const RenderMusicItem: React.FC<ItemProps> = (props) => {
 };
 
 const PlayerButton: React.FC<Props> = (props) => {
-  const [musics, setMusics] = useState<Music[]>(props.musics);
+  const [musicsSearch, setMusics] = useState<Music[]>(props.musics);
   const [search, setSearch] = useState<string>("");
 
   useEffect(() => {
     setMusics(props.musics.filter((music) => {
       return music.name.toUpperCase().includes(search.toUpperCase())
     }))
-  }, [props.musics])
+  },[])
 
   const filterMusicsBySearch = () => {
     setMusics(props.musics.filter((music) => {
@@ -68,18 +68,18 @@ const PlayerButton: React.FC<Props> = (props) => {
       }} />
       <FlatList
         style={styles.libraryMusic}
-        data={musics}
+        data={musicsSearch}
         numColumns = {1}
         initialNumToRender={20}
-        renderItem={({item, index}) => {
+        renderItem={({item}) => {
           return (
           item.name == props.musicName ? 
-          <RenderMusicItem  music={item} current={true} changeMusic={props.changeMusic} index={index}/> 
+          <RenderMusicItem  music={item} current={true} changeMusic={props.changeMusic} index={props.musics.indexOf(item)}/> 
           :  
-          <RenderMusicItem  music={item} current={false} changeMusic={props.changeMusic} index={index}/>
+          <RenderMusicItem  music={item} current={false}  index={props.musics.indexOf(item)} changeMusic={props.changeMusic}/>
           )}}
         keyExtractor={item => item.uri}
-        extraData={musics}
+        extraData={musicsSearch}
       />
     </View>
   );

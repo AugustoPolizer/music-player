@@ -159,7 +159,6 @@ const Player: React.FC = () => {
       } else {
         if (paginationControll.hasNextPage) {
           fetchNewMusic();
-
         }
         else {
           changeMusic(musics[0], 0)
@@ -181,12 +180,10 @@ const Player: React.FC = () => {
     if (currentMusic + 1 < musics.length) {
       changeMusic(musics[currentMusic + 1], currentMusic + 1)
     } else {
-      if (paginationControll.hasNextPage) {
+    /*   if (paginationControll.hasNextPage) {
         fetchNewMusic();
-      }
-      else {
+      } */
         changeMusic(musics[0], 0)
-      }
     }
   };
 
@@ -215,6 +212,9 @@ const Player: React.FC = () => {
           status.positionMillis !== undefined
         ) {
           setCount(Math.floor(status.positionMillis / 1000));
+          if(count == Math.floor(musics[currentMusic].duration)){
+            forwardMusic()
+          }
         }
       } catch (error) { }
     }, 500);
