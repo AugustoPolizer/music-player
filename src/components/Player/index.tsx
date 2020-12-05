@@ -2,22 +2,26 @@ import React, { useState, useEffect } from "react";
 import { View, Text, StyleSheet, ImageBackground } from "react-native";
 import * as MediaLibrary from "expo-media-library";
 import { Audio } from "expo-av";
-import Timer from "./timer";
 import Controllers from "./controllers";
-import { Music } from "../../types/commons";
+import { Music, Pagination } from "../../types/commons";
 import Library from "./Library";
 import ProgressBar from "./progressBar";
 
+
+
 const Player: React.FC = () => {
   const [count, setCount] = useState<number>(0);
-  const [musicName, setMusicName] = useState<String>("");
-  const [durationTime, setDurationTIme] = useState<number>(0);
   const [currentMusic, setCurrentMusic] = useState<number>(0);
   const [soundObject, setSoundObject] = useState<Audio.Sound | null>(null);
   const [paused, setPaused] = useState<boolean>(false);
   const [permission, setPermission] = useState<Audio.PermissionResponse | null>(
     null
   );
+  const [music, setMusic] = useState<Music>({
+    name: "",
+    duration: 0,
+    uri: ""
+  })
   const [musics, setMusics] = useState<Array<Music>>([
     {
       name: "",
@@ -25,13 +29,25 @@ const Player: React.FC = () => {
       duration: 0,
     },
   ]);
+  const [paginationControll, setPaginationControll] = useState<Pagination>(
+    {
+      endCursor: "",
+      hasNextPage: false,
+      totalCount: 0
+    }
+  )
+
   useEffect(() => {
-    Audio.INTERRUPTION_MODE_ANDROID_DO_NOT_MIX;
     MediaLibrary.requestPermissionsAsync().then((permission) => {
       if (permission.granted) {
         MediaLibrary.getAssetsAsync({
           mediaType: "audio",
         }).then((mediaQuery) => {
+          setPaginationControll({
+            endCursor: mediaQuery.endCursor,
+            hasNextPage: mediaQuery.hasNextPage,
+            totalCount: mediaQuery.totalCount
+          })
           setMusics(
             mediaQuery.assets.map(
               (asset): Music => {
@@ -50,10 +66,9 @@ const Player: React.FC = () => {
 
   useEffect(() => {
     if (musics.length !== 0) {
-      createSound(musics[0])
+      createSound(musics[currentMusic])
         .then((sound) => {
-          setMusicName(musics[0].name);
-          setDurationTIme(musics[0].duration);
+          setMusic(musics[currentMusic])
           setSoundObject(sound);
         })
         .catch((error) => {
@@ -74,21 +89,52 @@ const Player: React.FC = () => {
     };
   }, [soundObject]);
 
-  const changeMusic = (music: Music,index : number) => {
+  const fetchNewMusic = () => {
+    return new Promise((resolve, reject) => {
+      MediaLibrary.requestPermissionsAsync().then((permission) => {
+        if (permission.granted) {
+          MediaLibrary.getAssetsAsync({
+            mediaType: "audio",
+            after: paginationControll.endCursor
+          }).then((mediaQuery) => {
+            setPaginationControll({
+              endCursor: mediaQuery.endCursor,
+              hasNextPage: mediaQuery.hasNextPage,
+              totalCount: mediaQuery.totalCount
+            })
+            setMusics(musics.concat(
+              mediaQuery.assets.map(
+                (asset): Music => {
+                  return {
+                    name: asset.filename,
+                    uri: asset.uri,
+                    duration: asset.duration,
+                  };
+                }
+              ))
+            );
+          });
+        }
+      });
+    })
+  }
+
+  const changeMusic = (music: Music, index: number) => {
     createSound(music)
       .then((sound) => {
         setCurrentMusic(index)
         setSoundObject(sound);
-        setMusicName(music.name);
-        setDurationTIme(music.duration);
+        setMusic(music);
       })
       .catch((error) => {
         setSoundObject(null);
       });
   };
-  const changeMusicTime = (position : number) =>{
+
+  const changeMusicTime = (position: number) => {
     soundObject?.setPositionAsync(position)
   }
+
   const getPermission = (): Promise<Audio.PermissionResponse> => {
     return new Promise<Audio.PermissionResponse>((resolve, reject) => {
       if (permission === null) {
@@ -107,8 +153,18 @@ const Player: React.FC = () => {
   };
 
   const statusHandler = (status: any) => {
-    if (status.didJustFinish && currentMusic + 1 < musics.length) {
-      changeMusic(musics[currentMusic+1],currentMusic + 1)
+    if (status.didJustFinish) {
+      if (currentMusic + 1 < musics.length) {
+        changeMusic(musics[currentMusic + 1], currentMusic + 1)
+      } else {
+        if (paginationControll.hasNextPage) {
+          fetchNewMusic();
+
+        }
+        else {
+          changeMusic(musics[0], 0)
+        }
+      }
     }
   };
 
@@ -123,19 +179,24 @@ const Player: React.FC = () => {
 
   const forwardMusic = () => {
     if (currentMusic + 1 < musics.length) {
-      changeMusic(musics[currentMusic+1],currentMusic + 1)
-    }else{
-      changeMusic(musics[0],0)
+      changeMusic(musics[currentMusic + 1], currentMusic + 1)
+    } else {
+      if (paginationControll.hasNextPage) {
+        fetchNewMusic();
+      }
+      else {
+        changeMusic(musics[0], 0)
+      }
     }
   };
 
   const backwardMusic = () => {
     if (currentMusic - 1 >= 0) {
-      changeMusic(musics[currentMusic-1],currentMusic - 1)
-    }else{
-      changeMusic(musics[musics.length-1],musics.length-1)
+      changeMusic(musics[currentMusic - 1], currentMusic - 1)
+    } else {
+      changeMusic(musics[musics.length - 1], musics.length - 1)
     }
-   
+
   };
 
   const startMusic = async () => {
@@ -155,7 +216,7 @@ const Player: React.FC = () => {
         ) {
           setCount(Math.floor(status.positionMillis / 1000));
         }
-      } catch (error) {}
+      } catch (error) { }
     }, 500);
   };
 
@@ -178,14 +239,9 @@ const Player: React.FC = () => {
       </ImageBackground>
       <View style={styles.menus}>
         <Text style={styles.musicName}>
-         
-          {String(musicName).substring(0, String(musicName).lastIndexOf("."))}
+          {music.name.substring(0, music.name.lastIndexOf("."))}
         </Text>
-        <ProgressBar changeMusicTime={changeMusicTime} currentTime={count} durationTime={Math.floor(durationTime)}/>
-   {/*      <Timer
-          currentTime={formateToMinutes(count)}
-          durationTime={formateToMinutes(Math.floor(durationTime))}
-        /> */}
+        <ProgressBar changeMusicTime={changeMusicTime} currentTime={count} durationTime={Math.floor(music.duration)} />
         <Controllers
           soundObject={soundObject}
           forwardMusic={forwardMusic}

@@ -3,3 +3,9 @@ export type Music = {
   name: string
   duration: number
 }
+
+export type Pagination = {
+  endCursor: string,
+  hasNextPage: boolean,
+  totalCount: number
+}
