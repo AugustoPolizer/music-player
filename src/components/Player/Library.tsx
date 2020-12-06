@@ -45,32 +45,26 @@ const RenderMusicItem: React.FC<ItemProps> = (props) => {
 };
 
 const PlayerButton: React.FC<Props> = (props) => {
-  const [musicsSearch, setMusics] = useState<Music[]>(props.musics);
-  const [search, setSearch] = useState<string>("");
+  const [musicsSearch, setMusicsSearch] = useState<Music[]>();
 
-  useEffect(() => {
-    setMusics(props.musics.filter((music) => {
-      return music.name.toUpperCase().includes(search.toUpperCase())
+/*   const filterMusicsBySearch = (text : string) => {
+    setMusicsSearch(props.musics.filter((music) => {
+      return music.name.toUpperCase().includes(text.toUpperCase())
     }))
-  },[])
+  } */
 
-  const filterMusicsBySearch = () => {
-    setMusics(props.musics.filter((music) => {
-      return music.name.toUpperCase().includes(search.toUpperCase())
-    }))
-  }
-
+  useEffect (() => {    
+    setMusicsSearch(props.musics)
+ },[props.musics])
+ 
   return (
     <View style={styles.background}>
-      <Search onSearch={(newSearch: string) => {
-        setSearch(newSearch);
-        filterMusicsBySearch()
-      }} />
+      <Search musics={props.musics} setMusicsSearch={setMusicsSearch}/>
       <FlatList
         style={styles.libraryMusic}
         data={musicsSearch}
         numColumns = {1}
-        initialNumToRender={20}
+        initialNumToRender={10}
         renderItem={({item}) => {
           return (
           <RenderMusicItem  music={item} current={ item.name == props.musicName ? true : false} changeMusic={props.changeMusic} index={props.musics.indexOf(item)}/> 

@@ -1,14 +1,21 @@
 import React, { useState } from 'react';
 import { TextInput, TouchableOpacity, View, StyleSheet, TextInputComponent } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
+import { Music } from '../types/commons';
 
 export type Props = {
-  onSearch: (newSearch: string) => void
+  musics : Music[]
+  setMusicsSearch : Function
+}
+
+const searcher = (text : string,fn : Function,musics : Music[])=>{
+  fn(musics.filter((music) => {
+    return music.name.toUpperCase().includes(text.toUpperCase())
+  }))
 }
 
 const Search: React.FC<Props> = (props) => {
   const [textInput, setTextInput] = useState<TextInput>();
-
   return (
     <View style={styles.searchContainer}>
       <TouchableOpacity onPress={() => {
@@ -18,7 +25,7 @@ const Search: React.FC<Props> = (props) => {
         <Icon name="search" size={20} color="white" />
       </TouchableOpacity>
       <TextInput
-        onChangeText={(text)=>{props.onSearch(text)}}
+        onChangeText={(text)=>{searcher(text,props.setMusicsSearch,props.musics)}}
         style={styles.searchInput}
         ref={(input) => {
           if (input)

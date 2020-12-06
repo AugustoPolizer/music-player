@@ -91,6 +91,7 @@ const Player: React.FC = () => {
 
   const fetchNewMusic = () => {
     return new Promise((resolve, reject) => {
+      //pra que uma Promise se ela nao da resolve
       MediaLibrary.requestPermissionsAsync().then((permission) => {
         if (permission.granted) {
           MediaLibrary.getAssetsAsync({
