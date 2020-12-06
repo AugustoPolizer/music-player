@@ -42,10 +42,12 @@ const RenderMusicItem: React.FC<ItemProps> = (props) => {
   musics: Music[]
   changeMusic: (music: Music, number: number) => void
   musicName : string
+  setMusicsSearch : Function
+  musicsSearch : Music[]
 };
 
 const PlayerButton: React.FC<Props> = (props) => {
-  const [musicsSearch, setMusicsSearch] = useState<Music[]>();
+  /* const [musicsSearch, setMusicsSearch] = useState<Music[]>(); */
 
 /*   const filterMusicsBySearch = (text : string) => {
     setMusicsSearch(props.musics.filter((music) => {
@@ -54,15 +56,15 @@ const PlayerButton: React.FC<Props> = (props) => {
   } */
 
   useEffect (() => {    
-    setMusicsSearch(props.musics)
+    props.setMusicsSearch(props.musics)
  },[props.musics])
- 
+
   return (
     <View style={styles.background}>
-      <Search musics={props.musics} setMusicsSearch={setMusicsSearch}/>
+      <Search musics={props.musics} setMusicsSearch={props.setMusicsSearch}/>
       <FlatList
         style={styles.libraryMusic}
-        data={musicsSearch}
+        data={props.musicsSearch}
         numColumns = {1}
         initialNumToRender={10}
         renderItem={({item}) => {
@@ -70,7 +72,7 @@ const PlayerButton: React.FC<Props> = (props) => {
           <RenderMusicItem  music={item} current={ item.name == props.musicName ? true : false} changeMusic={props.changeMusic} index={props.musics.indexOf(item)}/> 
           )}}
         keyExtractor={item => item.uri}
-        extraData={musicsSearch}
+        extraData={props.musicsSearch}
       />
     </View>
   );

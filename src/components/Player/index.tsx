@@ -29,6 +29,13 @@ const Player: React.FC = () => {
       duration: 0,
     },
   ]);
+  const [musicsSearch, setMusicsSearch] = useState<Array<Music>>([
+    {
+      name: "",
+      uri: "",
+      duration: 0,
+    },
+  ]);
   const [paginationControll, setPaginationControll] = useState<Pagination>(
     {
       endCursor: "",
@@ -178,6 +185,7 @@ const Player: React.FC = () => {
   };
 
   const forwardMusic = () => {
+    console.warn(musicsSearch)
     if (currentMusic + 1 < musics.length) {
       changeMusic(musics[currentMusic + 1], currentMusic + 1)
     } else {
@@ -235,7 +243,7 @@ const Player: React.FC = () => {
         source={require("../../../assets/background.png")}
       >
         <View style={styles.scrollView}>
-          <Library musics={musics} changeMusic={changeMusic} musicName={musics[currentMusic].name}/>
+          <Library setMusicsSearch={setMusicsSearch} musicsSearch={musicsSearch}  musics={musics} changeMusic={changeMusic} musicName={musics[currentMusic].name}/>
         </View>
       </ImageBackground>
       <View style={styles.menus}>
