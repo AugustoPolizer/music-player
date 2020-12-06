@@ -73,10 +73,7 @@ const PlayerButton: React.FC<Props> = (props) => {
         initialNumToRender={20}
         renderItem={({item}) => {
           return (
-          item.name == props.musicName ? 
-          <RenderMusicItem  music={item} current={true} changeMusic={props.changeMusic} index={props.musics.indexOf(item)}/> 
-          :  
-          <RenderMusicItem  music={item} current={false}  index={props.musics.indexOf(item)} changeMusic={props.changeMusic}/>
+          <RenderMusicItem  music={item} current={ item.name == props.musicName ? true : false} changeMusic={props.changeMusic} index={props.musics.indexOf(item)}/> 
           )}}
         keyExtractor={item => item.uri}
         extraData={musicsSearch}
