@@ -1,4 +1,6 @@
+
 export type Music = {
+  index : number
   uri: string
   name: string
   duration: number

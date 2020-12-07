@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect } from "react";
 import { Text, StyleSheet, Image, View } from "react-native";
 import {
   FlatList,
@@ -9,8 +9,7 @@ import { Music } from "../../types/commons";
 
 export type ItemProps = {
   music: Music
-  index: number
-  changeMusic: (music: Music, number: number) => void
+  changeMusic: (number: number) => void
   current : boolean
 }
 
@@ -18,7 +17,7 @@ const RenderMusicItem: React.FC<ItemProps> = (props) => {
   return (
     <TouchableOpacity
       style={styles.displayer}
-      onPress={() => {props.changeMusic(props.music, props.index)}}
+      onPress={() => {props.changeMusic(props.music.index);}}
     >
       <View style={props.current ? styles.musicLineActive : styles.musicLine}>
         <Image
@@ -28,7 +27,7 @@ const RenderMusicItem: React.FC<ItemProps> = (props) => {
           }}
         />
         <Text style={styles.libraryText}>
-          {props.index +' - '+ props.music.name.substring(
+          {props.music.name.substring(
             0,
             props.music.name.lastIndexOf(".")
           )}
@@ -40,7 +39,7 @@ const RenderMusicItem: React.FC<ItemProps> = (props) => {
 
  export type Props = {
   musics: Music[]
-  changeMusic: (music: Music, number: number) => void
+  changeMusic: (index: number) => void
   musicName : string
   setMusicsSearch : Function
   musicsSearch : Music[]
@@ -69,7 +68,7 @@ const PlayerButton: React.FC<Props> = (props) => {
         initialNumToRender={10}
         renderItem={({item}) => {
           return (
-          <RenderMusicItem  music={item} current={ item.name == props.musicName ? true : false} changeMusic={props.changeMusic} index={props.musics.indexOf(item)}/> 
+          <RenderMusicItem  music={item} current={ item.name == props.musicName ? true : false} changeMusic={props.changeMusic}/> 
           )}}
         keyExtractor={item => item.uri}
         extraData={props.musicsSearch}

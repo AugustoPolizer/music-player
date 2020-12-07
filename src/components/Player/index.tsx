@@ -7,23 +7,22 @@ import { Music, Pagination } from "../../types/commons";
 import Library from "./Library";
 import ProgressBar from "./progressBar";
 
-
-
 const Player: React.FC = () => {
   const [count, setCount] = useState<number>(0);
-  const [currentMusic, setCurrentMusic] = useState<number>(0);
   const [soundObject, setSoundObject] = useState<Audio.Sound | null>(null);
   const [paused, setPaused] = useState<boolean>(false);
   const [permission, setPermission] = useState<Audio.PermissionResponse | null>(
     null
   );
   const [music, setMusic] = useState<Music>({
+    index : 0,
     name: "",
     duration: 0,
-    uri: ""
-  })
+    uri: "",
+  });
   const [musics, setMusics] = useState<Array<Music>>([
     {
+      index : 0,
       name: "",
       uri: "",
       duration: 0,
@@ -31,18 +30,17 @@ const Player: React.FC = () => {
   ]);
   const [musicsSearch, setMusicsSearch] = useState<Array<Music>>([
     {
+      index : 0,
       name: "",
       uri: "",
       duration: 0,
     },
   ]);
-  const [paginationControll, setPaginationControll] = useState<Pagination>(
-    {
-      endCursor: "",
-      hasNextPage: false,
-      totalCount: 0
-    }
-  )
+  const [paginationControll, setPaginationControll] = useState<Pagination>({
+    endCursor: "",
+    hasNextPage: false,
+    totalCount: 0,
+  });
 
   useEffect(() => {
     MediaLibrary.requestPermissionsAsync().then((permission) => {
@@ -53,12 +51,13 @@ const Player: React.FC = () => {
           setPaginationControll({
             endCursor: mediaQuery.endCursor,
             hasNextPage: mediaQuery.hasNextPage,
-            totalCount: mediaQuery.totalCount
-          })
+            totalCount: mediaQuery.totalCount,
+          });
           setMusics(
             mediaQuery.assets.map(
               (asset): Music => {
                 return {
+                  index : parseInt(asset.id),
                   name: asset.filename,
                   uri: asset.uri,
                   duration: asset.duration,
@@ -71,68 +70,84 @@ const Player: React.FC = () => {
     });
   }, []);
 
-  useEffect(() => {
-    if (musics.length !== 0) {
-      createSound(musics[currentMusic])
+/*   useEffect(() => {
+    if (musicsSearch.length !== 0) {
+      createSound(musicsSearch[0])
         .then((sound) => {
-          setMusic(musics[currentMusic])
+          setMusic(musicsSearch[0]);
           setSoundObject(sound);
         })
         .catch((error) => {
           setSoundObject(null);
         });
     }
-  }, [musics]);
-
+  },[musics]);
+ */
   useEffect(() => {
-    if (soundObject) {
-      soundObject.playAsync();
-    }
-    return function cleanup() {
+    try {
       if (soundObject) {
-        soundObject.stopAsync();
-        soundObject.unloadAsync();
+        soundObject.playAsync();
       }
-    };
+      return function cleanup() {
+        if (soundObject) {
+          soundObject.stopAsync();
+          soundObject.unloadAsync();
+        }
+      };
+    } catch (error) {
+      alert(error)
+    }
+  
   }, [soundObject]);
-
-  const fetchNewMusic = () => {
+//arruma essa paginação ta travando tudo
+/*     const fetchNewMusic = () => {
     return new Promise((resolve, reject) => {
       //pra que uma Promise se ela nao da resolve
       MediaLibrary.requestPermissionsAsync().then((permission) => {
         if (permission.granted) {
           MediaLibrary.getAssetsAsync({
             mediaType: "audio",
-            after: paginationControll.endCursor
+            after: paginationControll.endCursor,
           }).then((mediaQuery) => {
             setPaginationControll({
               endCursor: mediaQuery.endCursor,
               hasNextPage: mediaQuery.hasNextPage,
-              totalCount: mediaQuery.totalCount
-            })
-            setMusics(musics.concat(
-              mediaQuery.assets.map(
-                (asset): Music => {
-                  return {
-                    name: asset.filename,
-                    uri: asset.uri,
-                    duration: asset.duration,
-                  };
-                }
-              ))
+              totalCount: mediaQuery.totalCount,
+            });
+            setMusics(
+              musics.concat(
+                mediaQuery.assets.map(
+                  (asset): Music => {
+                    return {
+                      index : parseInt(asset.id),
+                      name: asset.filename,
+                      uri: asset.uri,
+                      duration: asset.duration,
+                    };
+                  }
+                )
+              )
             );
           });
         }
       });
-    })
-  }
+    });
+  }; */
+  const createSound = async (music: Music): Promise<Audio.Sound> => {
+    const { sound, status } = await Audio.Sound.createAsync(
+      { uri: music.uri },
+      { progressUpdateIntervalMillis: 1000 },
+      statusHandler
+    );
+    return sound;
+  };
 
-  const changeMusic = (music: Music, index: number) => {
-    createSound(music)
+  const changeMusic = (index: number) => {
+    const song = musicsSearch[musicsSearch.findIndex((songs)=>songs.index === index)]
+    setMusic(song);
+    createSound(song)
       .then((sound) => {
-        setCurrentMusic(index)
         setSoundObject(sound);
-        setMusic(music);
       })
       .catch((error) => {
         setSoundObject(null);
@@ -140,8 +155,8 @@ const Player: React.FC = () => {
   };
 
   const changeMusicTime = (position: number) => {
-    soundObject?.setPositionAsync(position)
-  }
+    soundObject?.setPositionAsync(position);
+  };
 
   const getPermission = (): Promise<Audio.PermissionResponse> => {
     return new Promise<Audio.PermissionResponse>((resolve, reject) => {
@@ -161,48 +176,40 @@ const Player: React.FC = () => {
   };
 
   const statusHandler = (status: any) => {
-    if (status.didJustFinish) {
-      if (currentMusic + 1 < musics.length) {
-        changeMusic(musics[currentMusic + 1], currentMusic + 1)
-      } else {
-        if (paginationControll.hasNextPage) {
+     /*  forwardMusic() */
+       /*        if (paginationControll.hasNextPage) {
           fetchNewMusic();
-        }
-        else {
-          changeMusic(musics[0], 0)
-        }
-      }
-    }
+        } */
   };
 
-  const createSound = async (music: Music): Promise<Audio.Sound> => {
-    const { sound, status } = await Audio.Sound.createAsync(
-      { uri: music.uri },
-      { progressUpdateIntervalMillis: 1000 },
-      statusHandler
-    );
-    return sound;
-  };
+  
 
   const forwardMusic = () => {
-    console.warn(musicsSearch)
-    if (currentMusic + 1 < musics.length) {
-      changeMusic(musics[currentMusic + 1], currentMusic + 1)
+    if (musicsSearch[musicsSearch.findIndex((songs) => songs.index === music.index)+1]) {
+      changeMusic(
+        musicsSearch[musicsSearch.findIndex((songs) => songs.index === music.index)+1].index
+      );
     } else {
-    /*   if (paginationControll.hasNextPage) {
-        fetchNewMusic();
-      } */
-        changeMusic(musics[0], 0)
+       /*  if (paginationControll.hasNextPage) {
+          fetchNewMusic();
+        } */
+        changeMusic(
+          musicsSearch[0].index
+        );
+       
     }
   };
 
   const backwardMusic = () => {
-    if (currentMusic - 1 >= 0) {
-      changeMusic(musics[currentMusic - 1], currentMusic - 1)
+    if (musicsSearch.findIndex((songs) => songs.index === music.index)-1 >=0) {
+      changeMusic(
+        musicsSearch[musicsSearch.findIndex((songs) => songs.index === music.index)-1].index
+      );
     } else {
-      changeMusic(musics[musics.length - 1], musics.length - 1)
+      changeMusic(
+        musicsSearch[musicsSearch.length-1].index
+      );
     }
-
   };
 
   const startMusic = async () => {
@@ -215,17 +222,17 @@ const Player: React.FC = () => {
   const timerStart = async () => {
     setInterval(() => {
       try {
-        const status = JSON.parse(String(soundObject?._lastStatusUpdate));
+        const params = JSON.parse(String(soundObject?._lastStatusUpdate));
         if (
-          status.positionMillis !== NaN &&
-          status.positionMillis !== undefined
+          params.positionMillis !== NaN &&
+          params.positionMillis !== undefined
         ) {
-          setCount(Math.floor(status.positionMillis / 1000));
-          if(count == Math.floor(musics[currentMusic].duration)){
+          setCount(Math.floor(params.positionMillis / 1000));
+          if(Math.floor(params.positionMillis / 1000) === Math.floor(music.duration)){
             forwardMusic()
           }
         }
-      } catch (error) { }
+      } catch (error) {}
     }, 500);
   };
 
@@ -243,14 +250,24 @@ const Player: React.FC = () => {
         source={require("../../../assets/background.png")}
       >
         <View style={styles.scrollView}>
-          <Library setMusicsSearch={setMusicsSearch} musicsSearch={musicsSearch}  musics={musics} changeMusic={changeMusic} musicName={musics[currentMusic].name}/>
+          <Library
+            setMusicsSearch={setMusicsSearch}
+            musicsSearch={musicsSearch}
+            musics={musics}
+            changeMusic={changeMusic}
+            musicName={music.name}
+          />
         </View>
       </ImageBackground>
       <View style={styles.menus}>
         <Text style={styles.musicName}>
-          {music.name.substring(0, music.name.lastIndexOf("."))}
+            {music.name.substring(0, music.name.lastIndexOf("."))}
         </Text>
-        <ProgressBar changeMusicTime={changeMusicTime} currentTime={count} durationTime={Math.floor(music.duration)} />
+        <ProgressBar
+          changeMusicTime={changeMusicTime}
+          currentTime={count}
+          durationTime={Math.floor(music.duration)}
+        />
         <Controllers
           soundObject={soundObject}
           forwardMusic={forwardMusic}

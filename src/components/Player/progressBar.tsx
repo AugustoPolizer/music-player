@@ -37,6 +37,7 @@ const ProgressBar: React.FC<Props> = (props) => {
           style={{
             backgroundColor: 'red',
             width: `${(props.currentTime / props.durationTime) * 100}%`,
+            maxWidth : Dimensions.get("screen").width * 0.8,
           }}
         >
           <Text style={styles.textColor}>
