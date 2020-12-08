@@ -17,6 +17,7 @@ const Player: React.FC = () => {
   const [music, setMusic] = useState<Music>({
     index : 0,
     name: "",
+    album : "",
     duration: 0,
     uri: "",
   });
@@ -24,6 +25,7 @@ const Player: React.FC = () => {
     {
       index : 0,
       name: "",
+      album : "",
       uri: "",
       duration: 0,
     },
@@ -32,6 +34,7 @@ const Player: React.FC = () => {
     {
       index : 0,
       name: "",
+      album : "",
       uri: "",
       duration: 0,
     },
@@ -48,17 +51,26 @@ const Player: React.FC = () => {
         MediaLibrary.getAssetsAsync({
           mediaType: "audio",
         }).then((mediaQuery) => {
-          setPaginationControll({
+/*           MediaLibrary.getAlbumsAsync({
+            
+          }).then(result => result.forEach(element =>console.log(element.id))) */
+        /*   setPaginationControll({
             endCursor: mediaQuery.endCursor,
             hasNextPage: mediaQuery.hasNextPage,
             totalCount: mediaQuery.totalCount,
-          });
+          }); */
           setMusics(
             mediaQuery.assets.map(
               (asset): Music => {
                 return {
                   index : parseInt(asset.id),
-                  name: asset.filename,
+                  name:  asset.filename,
+                  album : MediaLibrary.getAlbumsAsync({
+                  }).then(result =>{return result.filter(
+                    element =>{ 
+                      if(element.id === asset.albumId){
+                        return element.title}
+                      })}),
                   uri: asset.uri,
                   duration: asset.duration,
                 };
@@ -185,6 +197,7 @@ const Player: React.FC = () => {
   
 
   const forwardMusic = () => {
+    console.log(music.album._W[0].title)
     if (musicsSearch[musicsSearch.findIndex((songs) => songs.index === music.index)+1]) {
       changeMusic(
         musicsSearch[musicsSearch.findIndex((songs) => songs.index === music.index)+1].index
@@ -261,7 +274,7 @@ const Player: React.FC = () => {
       </ImageBackground>
       <View style={styles.menus}>
         <Text style={styles.musicName}>
-            {music.name.substring(0, music.name.lastIndexOf("."))}
+            {music.name/* .substring(0, music.name.lastIndexOf(".")) */} 
         </Text>
         <ProgressBar
           changeMusicTime={changeMusicTime}
