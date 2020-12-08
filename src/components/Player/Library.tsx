@@ -27,10 +27,10 @@ const RenderMusicItem: React.FC<ItemProps> = (props) => {
           }}
         />
         <Text style={styles.libraryText}>
-          {props.music.name/* .substring(
+          {props.music.name.substring(
             0,
             props.music.name.lastIndexOf(".")
-          ) */}
+          )}
         </Text>
       </View>
     </TouchableOpacity>

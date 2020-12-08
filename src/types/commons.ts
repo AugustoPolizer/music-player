@@ -3,7 +3,7 @@ export type Music = {
   index : number
   uri: string
   name: string
-  album : any
+  album : string
   duration: number
 }
 

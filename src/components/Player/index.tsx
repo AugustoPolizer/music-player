@@ -11,6 +11,7 @@ const Player: React.FC = () => {
   const [count, setCount] = useState<number>(0);
   const [soundObject, setSoundObject] = useState<Audio.Sound | null>(null);
   const [paused, setPaused] = useState<boolean>(false);
+  const [albums,setAlbums] = useState<Array<any>>([])
   const [permission, setPermission] = useState<Audio.PermissionResponse | null>(
     null
   );
@@ -46,43 +47,38 @@ const Player: React.FC = () => {
   });
 
   useEffect(() => {
-    MediaLibrary.requestPermissionsAsync().then((permission) => {
+    MediaLibrary.requestPermissionsAsync().then(async(permission) => {
       if (permission.granted) {
-        MediaLibrary.getAssetsAsync({
+         await MediaLibrary.getAssetsAsync({
           mediaType: "audio",
-        }).then((mediaQuery) => {
-/*           MediaLibrary.getAlbumsAsync({
-            
-          }).then(result => result.forEach(element =>console.log(element.id))) */
-        /*   setPaginationControll({
-            endCursor: mediaQuery.endCursor,
-            hasNextPage: mediaQuery.hasNextPage,
-            totalCount: mediaQuery.totalCount,
-          }); */
-          setMusics(
+        }).then(async(mediaQuery) => {
+          await MediaLibrary.getAlbumsAsync().then((result)=>setMusics(
             mediaQuery.assets.map(
               (asset): Music => {
                 return {
                   index : parseInt(asset.id),
                   name:  asset.filename,
-                  album : MediaLibrary.getAlbumsAsync({
-                  }).then(result =>{return result.filter(
-                    element =>{ 
-                      if(element.id === asset.albumId){
-                        return element.title}
-                      })}),
+                  album : result.filter((element)=>{if(element.id === asset.albumId){return element.title}})
+                  .map((element)=>{return element.title})
+                  .toString(),
                   uri: asset.uri,
                   duration: asset.duration,
                 };
               }
             )
-          );
+          ))
+        /*   setPaginationControll({
+            endCursor: mediaQuery.endCursor,
+            hasNextPage: mediaQuery.hasNextPage,
+            totalCount: mediaQuery.totalCount,
+          }); */
+          ;
         });
       }
     });
-  }, []);
+  },[]);
 
-/*   useEffect(() => {
+  useEffect(() => {
     if (musicsSearch.length !== 0) {
       createSound(musicsSearch[0])
         .then((sound) => {
@@ -94,7 +90,7 @@ const Player: React.FC = () => {
         });
     }
   },[musics]);
- */
+
   useEffect(() => {
     try {
       if (soundObject) {
@@ -155,6 +151,7 @@ const Player: React.FC = () => {
   };
 
   const changeMusic = (index: number) => {
+    console.log(music)
     const song = musicsSearch[musicsSearch.findIndex((songs)=>songs.index === index)]
     setMusic(song);
     createSound(song)
@@ -197,7 +194,6 @@ const Player: React.FC = () => {
   
 
   const forwardMusic = () => {
-    console.log(music.album._W[0].title)
     if (musicsSearch[musicsSearch.findIndex((songs) => songs.index === music.index)+1]) {
       changeMusic(
         musicsSearch[musicsSearch.findIndex((songs) => songs.index === music.index)+1].index
@@ -274,7 +270,7 @@ const Player: React.FC = () => {
       </ImageBackground>
       <View style={styles.menus}>
         <Text style={styles.musicName}>
-            {music.name/* .substring(0, music.name.lastIndexOf(".")) */} 
+            {music.name.substring(0, music.name.lastIndexOf("."))} - {music.album}
         </Text>
         <ProgressBar
           changeMusicTime={changeMusicTime}
