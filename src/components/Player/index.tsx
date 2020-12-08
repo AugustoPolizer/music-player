@@ -1,41 +1,48 @@
 import React, { useState, useEffect } from "react";
-import { View, Text, StyleSheet, ImageBackground } from "react-native";
+import {
+  View,
+  Text,
+  StyleSheet,
+  ImageBackground,
+  Dimensions,
+} from "react-native";
 import * as MediaLibrary from "expo-media-library";
 import { Audio } from "expo-av";
 import Controllers from "./controllers";
 import { Music, Pagination } from "../../types/commons";
 import Library from "./Library";
 import ProgressBar from "./progressBar";
+import { ScrollView } from "react-native-gesture-handler";
 
 const Player: React.FC = () => {
   const [count, setCount] = useState<number>(0);
   const [soundObject, setSoundObject] = useState<Audio.Sound | null>(null);
   const [paused, setPaused] = useState<boolean>(false);
-  const [albums,setAlbums] = useState<Array<any>>([])
+  const [albums, setAlbums] = useState<Array<any>>([]);
   const [permission, setPermission] = useState<Audio.PermissionResponse | null>(
     null
   );
   const [music, setMusic] = useState<Music>({
-    index : 0,
+    index: 0,
     name: "",
-    album : "",
+    album: "",
     duration: 0,
     uri: "",
   });
   const [musics, setMusics] = useState<Array<Music>>([
     {
-      index : 0,
+      index: 0,
       name: "",
-      album : "",
+      album: "",
       uri: "",
       duration: 0,
     },
   ]);
   const [musicsSearch, setMusicsSearch] = useState<Array<Music>>([
     {
-      index : 0,
+      index: 0,
       name: "",
-      album : "",
+      album: "",
       uri: "",
       duration: 0,
     },
@@ -47,36 +54,44 @@ const Player: React.FC = () => {
   });
 
   useEffect(() => {
-    MediaLibrary.requestPermissionsAsync().then(async(permission) => {
+    MediaLibrary.requestPermissionsAsync().then(async (permission) => {
       if (permission.granted) {
-         await MediaLibrary.getAssetsAsync({
+        await MediaLibrary.getAssetsAsync({
           mediaType: "audio",
-        }).then(async(mediaQuery) => {
-          await MediaLibrary.getAlbumsAsync().then((result)=>setMusics(
-            mediaQuery.assets.map(
-              (asset): Music => {
-                return {
-                  index : parseInt(asset.id),
-                  name:  asset.filename,
-                  album : result.filter((element)=>{if(element.id === asset.albumId){return element.title}})
-                  .map((element)=>{return element.title})
-                  .toString(),
-                  uri: asset.uri,
-                  duration: asset.duration,
-                };
-              }
+        }).then(async (mediaQuery) => {
+          await MediaLibrary.getAlbumsAsync().then((result) =>
+            setMusics(
+              mediaQuery.assets.map(
+                (asset): Music => {
+                  return {
+                    index: parseInt(asset.id),
+                    name: asset.filename,
+                    album: result
+                      .filter((element) => {
+                        if (element.id === asset.albumId) {
+                          return element.title;
+                        }
+                      })
+                      .map((element) => {
+                        return element.title;
+                      })
+                      .toString(),
+                    uri: asset.uri,
+                    duration: asset.duration,
+                  };
+                }
+              )
             )
-          ))
-        /*   setPaginationControll({
+          );
+          /*   setPaginationControll({
             endCursor: mediaQuery.endCursor,
             hasNextPage: mediaQuery.hasNextPage,
             totalCount: mediaQuery.totalCount,
           }); */
-          ;
         });
       }
     });
-  },[]);
+  }, []);
 
   useEffect(() => {
     if (musicsSearch.length !== 0) {
@@ -89,7 +104,7 @@ const Player: React.FC = () => {
           setSoundObject(null);
         });
     }
-  },[musics]);
+  }, [musics]);
 
   useEffect(() => {
     try {
@@ -103,12 +118,11 @@ const Player: React.FC = () => {
         }
       };
     } catch (error) {
-      alert(error)
+      alert(error);
     }
-  
   }, [soundObject]);
-//arruma essa paginação ta travando tudo
-/*     const fetchNewMusic = () => {
+  //arruma essa paginação ta travando tudo
+  /*     const fetchNewMusic = () => {
     return new Promise((resolve, reject) => {
       //pra que uma Promise se ela nao da resolve
       MediaLibrary.requestPermissionsAsync().then((permission) => {
@@ -151,8 +165,8 @@ const Player: React.FC = () => {
   };
 
   const changeMusic = (index: number) => {
-    console.log(music)
-    const song = musicsSearch[musicsSearch.findIndex((songs)=>songs.index === index)]
+    const song =
+    musicsSearch[musicsSearch.findIndex((songs) => songs.index === index)];
     setMusic(song);
     createSound(song)
       .then((sound) => {
@@ -185,39 +199,43 @@ const Player: React.FC = () => {
   };
 
   const statusHandler = (status: any) => {
-     /*  forwardMusic() */
-       /*        if (paginationControll.hasNextPage) {
+    /*  forwardMusic() */
+    /*        if (paginationControll.hasNextPage) {
           fetchNewMusic();
         } */
   };
 
-  
-
   const forwardMusic = () => {
-    if (musicsSearch[musicsSearch.findIndex((songs) => songs.index === music.index)+1]) {
+    if (
+      musicsSearch[
+        musicsSearch.findIndex((songs) => songs.index === music.index) + 1
+      ]
+    ) {
       changeMusic(
-        musicsSearch[musicsSearch.findIndex((songs) => songs.index === music.index)+1].index
+        musicsSearch[
+          musicsSearch.findIndex((songs) => songs.index === music.index) + 1
+        ].index
       );
     } else {
-       /*  if (paginationControll.hasNextPage) {
+      /*  if (paginationControll.hasNextPage) {
           fetchNewMusic();
         } */
-        changeMusic(
-          musicsSearch[0].index
-        );
-       
+      changeMusic(musicsSearch[0].index);
     }
   };
 
   const backwardMusic = () => {
-    if (musicsSearch.findIndex((songs) => songs.index === music.index)-1 >=0) {
+    if (
+      musicsSearch.findIndex((songs) => songs.index === music.index) - 1 >=
+      0
+    ) {
       changeMusic(
-        musicsSearch[musicsSearch.findIndex((songs) => songs.index === music.index)-1].index
+        musicsSearch[
+          musicsSearch.findIndex((songs) => songs.index === music.index) - 1
+        ].index
       );
     } else {
-      changeMusic(
-        musicsSearch[musicsSearch.length-1].index
-      );
+      changeMusic(musicsSearch[musicsSearch.length - 1].index);
     }
   };
 
@@ -237,8 +255,11 @@ const Player: React.FC = () => {
           params.positionMillis !== undefined
         ) {
           setCount(Math.floor(params.positionMillis / 1000));
-          if(Math.floor(params.positionMillis / 1000) === Math.floor(music.duration)){
-            forwardMusic()
+          if (
+            Math.floor(params.positionMillis / 1000) ===
+            Math.floor(music.duration)
+          ) {
+            forwardMusic();
           }
         }
       } catch (error) {}
@@ -253,24 +274,22 @@ const Player: React.FC = () => {
   };
 
   return (
-    <View>
+    <View style={styles.body}>
       <ImageBackground
         style={styles.displayMusicContainer}
         source={require("../../../assets/background.png")}
       >
-        <View style={styles.scrollView}>
-          <Library
-            setMusicsSearch={setMusicsSearch}
-            musicsSearch={musicsSearch}
-            musics={musics}
-            changeMusic={changeMusic}
-            musicName={music.name}
-          />
-        </View>
+        <Library
+          setMusicsSearch={setMusicsSearch}
+          musicsSearch={musicsSearch}
+          musics={musics}
+          changeMusic={changeMusic}
+          musicName={music.name}
+        />
       </ImageBackground>
       <View style={styles.menus}>
         <Text style={styles.musicName}>
-            {music.name.substring(0, music.name.lastIndexOf("."))} - {music.album}
+          {music.name.substring(0, music.name.lastIndexOf("."))} - {music.album}
         </Text>
         <ProgressBar
           changeMusicTime={changeMusicTime}
@@ -290,6 +309,12 @@ const Player: React.FC = () => {
 };
 
 const styles = StyleSheet.create({
+  body: {
+    flex: 1,
+  },
+  library: {
+    flexGrow: 5,
+  },
   displayMusicContainer: {
     display: "flex",
     alignItems: "center",
@@ -303,17 +328,11 @@ const styles = StyleSheet.create({
     flexWrap: "wrap",
     margin: 10,
   },
-  scrollView: {
-    width: "90%",
-    height: "80%",
-    borderColor: "rgb(100,100,100)",
-  },
   menus: {
+    flex: 1,
     alignItems: "center",
     justifyContent: "center",
     position: "relative",
-    height: "20%",
-    width: "100%",
     backgroundColor: "black",
     borderTopColor: "white",
     borderTopWidth: 2,

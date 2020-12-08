@@ -26,8 +26,8 @@ const Home: React.FC<Props> = ({ navigation }) => {
 
 const styles = StyleSheet.create({
   playerContainer: {
-    height: Dimensions.get('window').height,
-    width: Dimensions.get('window').width,
+    height: Dimensions.get('screen').height,
+    width: Dimensions.get('screen').width,
   }
 });
 
