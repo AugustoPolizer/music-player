@@ -75,62 +75,64 @@ const PlayerButton: React.FC<Props> = (props) => {
     setAlbums(array);
   }, [props.musics]);
   useEffect(() => {
-    setAlbumToShow(
-      props.musicsSearch[0].album ? props.musicsSearch[0].album : ""
-    );
+    if (props.musicsSearch.length > 0) {
+      setAlbumToShow(props.musicsSearch[0].album);
+    } else {
+      setAlbumToShow("");
+    }
   }, [props.musicsSearch]);
   return (
     <SafeAreaView style={styles.background}>
       <Search musics={props.musics} setMusicsSearch={props.setMusicsSearch} />
-      <FlatList style={styles.libraryMusic} 
-      numColumns={1}
-      initialNumToRender={10}
-      data={albums}
-      renderItem={({item}) => 
-        <View style={styles.body}>
-          {console.log(item)}
-          <TouchableOpacity
-            style={styles.displayer}
-            onPress={() => setAlbumToShow(item === albumToShow ? "" : item)}
-          >
-            <View style={styles.albumLine}>
-              <Image
-                style={styles.tinyLogo}
-                source={require("../../../assets/albumIcon.png")}
-              />
-              <Text style={styles.libraryText}>{item}</Text>
+      <FlatList
+        style={styles.libraryMusic}
+        numColumns={1}
+        initialNumToRender={10}
+        data={albums}
+        renderItem={({ item }) => (
+          <View style={styles.body}>
+            <TouchableOpacity
+              style={styles.displayer}
+              onPress={() => setAlbumToShow(item === albumToShow ? "" : item)}
+            >
+              <View style={styles.albumLine}>
+                <Image
+                  style={styles.tinyLogo}
+                  source={require("../../../assets/albumIcon.png")}
+                />
+                <Text style={styles.libraryText}>{item}</Text>
+              </View>
+            </TouchableOpacity>
+            <View>
+              {item === albumToShow ? (
+                <FlatList
+                  style={styles.libraryMusic}
+                  data={props.musics.filter((music) => {
+                    return music.album === item;
+                  })}
+                  numColumns={1}
+                  initialNumToRender={10}
+                  renderItem={({ item }) => {
+                    return (
+                      <RenderMusicItem
+                        music={item}
+                        current={item.name == props.musicName ? true : false}
+                        changeMusic={props.changeMusic}
+                      />
+                    );
+                  }}
+                  keyExtractor={(item) => item.uri}
+                  extraData={props.musics}
+                />
+              ) : (
+                false
+              )}
             </View>
-          </TouchableOpacity>
-          <View>
-            {item === albumToShow ? (
-              <FlatList
-                style={styles.libraryMusic}
-                data={props.musicsSearch.filter((music) => {
-                  return music.album === item;
-                })}
-                numColumns={1}
-                initialNumToRender={10}
-                renderItem={({ item }) => {
-                  return (
-                    <RenderMusicItem
-                      music={item}
-                      current={item.name == props.musicName ? true : false}
-                      changeMusic={props.changeMusic}
-                    />
-                  );
-                }}
-                keyExtractor={(item) => item.uri}
-                extraData={props.musicsSearch}
-              />
-            ) : (
-              false
-            )}
           </View>
-        </View>
-      }
-      keyExtractor={(item) => item}
-      extraData={props.musicsSearch}>
-      </FlatList>
+        )}
+        keyExtractor={(item) => item}
+        extraData={props.musics}
+      ></FlatList>
     </SafeAreaView>
   );
 };
