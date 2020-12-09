@@ -1,5 +1,13 @@
 import React, { useEffect, useState } from "react";
-import { Text, StyleSheet, Image, View, Dimensions } from "react-native";
+import {
+  Text,
+  StyleSheet,
+  Image,
+  View,
+  Dimensions,
+  ListViewComponent,
+  ListViewBase,
+} from "react-native";
 import {
   FlatList,
   ScrollView,
@@ -7,6 +15,7 @@ import {
 } from "react-native-gesture-handler";
 import Search from "../search";
 import { Music } from "../../types/commons";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 export type ItemProps = {
   music: Music;
@@ -66,56 +75,63 @@ const PlayerButton: React.FC<Props> = (props) => {
     setAlbums(array);
   }, [props.musics]);
   useEffect(() => {
-    setAlbumToShow(props.musicsSearch[0].album ? props.musicsSearch[0].album : "")
+    setAlbumToShow(
+      props.musicsSearch[0].album ? props.musicsSearch[0].album : ""
+    );
   }, [props.musicsSearch]);
   return (
-    <View style={styles.background}>
+    <SafeAreaView style={styles.background}>
       <Search musics={props.musics} setMusicsSearch={props.setMusicsSearch} />
-      <ScrollView>
+      <FlatList style={styles.libraryMusic} 
+      numColumns={1}
+      initialNumToRender={10}
+      data={albums}
+      renderItem={({item}) => 
         <View style={styles.body}>
-          {albums.map((album) => {
-            return (
-              <View style={styles.body}>
-                <TouchableOpacity
-                  style={styles.displayer}
-                  onPress={() => setAlbumToShow(album === albumToShow ? "" : album)}
-                >
-                  <View style={styles.albumLine}>
-                    <Image
-                      style={styles.tinyLogo}
-                      source={require("../../../assets/albumIcon.png")}
+          {console.log(item)}
+          <TouchableOpacity
+            style={styles.displayer}
+            onPress={() => setAlbumToShow(item === albumToShow ? "" : item)}
+          >
+            <View style={styles.albumLine}>
+              <Image
+                style={styles.tinyLogo}
+                source={require("../../../assets/albumIcon.png")}
+              />
+              <Text style={styles.libraryText}>{item}</Text>
+            </View>
+          </TouchableOpacity>
+          <View>
+            {item === albumToShow ? (
+              <FlatList
+                style={styles.libraryMusic}
+                data={props.musicsSearch.filter((music) => {
+                  return music.album === item;
+                })}
+                numColumns={1}
+                initialNumToRender={10}
+                renderItem={({ item }) => {
+                  return (
+                    <RenderMusicItem
+                      music={item}
+                      current={item.name == props.musicName ? true : false}
+                      changeMusic={props.changeMusic}
                     />
-                    <Text style={styles.libraryText}>{album}</Text>
-                  </View>
-                </TouchableOpacity>
-                <View>
-                  {album === albumToShow ? <FlatList
-                    style={styles.libraryMusic}
-                    data={props.musicsSearch.filter((music) => {
-                      return music.album === album;
-                    })}
-                    numColumns={1}
-                    initialNumToRender={10}
-                    renderItem={({ item }) => {
-                      return (
-                        <RenderMusicItem
-                          music={item}
-                          current={item.name == props.musicName ? true : false}
-                          changeMusic={props.changeMusic}
-                        />
-                      );
-                    }}
-                    keyExtractor={(item) => item.uri}
-                    extraData={props.musicsSearch}
-                  /> : false}
-                  
-                </View>
-              </View>
-            );
-          })}
+                  );
+                }}
+                keyExtractor={(item) => item.uri}
+                extraData={props.musicsSearch}
+              />
+            ) : (
+              false
+            )}
+          </View>
         </View>
-      </ScrollView>
-    </View>
+      }
+      keyExtractor={(item) => item}
+      extraData={props.musicsSearch}>
+      </FlatList>
+    </SafeAreaView>
   );
 };
 
@@ -156,8 +172,8 @@ const styles = StyleSheet.create({
   background: {
     height: "80%",
     width: Dimensions.get("window").width,
-    paddingLeft : 10,
-    paddingRight : 10,
+    paddingLeft: 10,
+    paddingRight: 10,
   },
   libraryText: {
     textAlign: "left",
