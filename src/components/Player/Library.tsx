@@ -83,7 +83,12 @@ const PlayerButton: React.FC<Props> = (props) => {
   }, [props.musicsSearch]);
   return (
     <SafeAreaView style={styles.background}>
-      <Search musics={props.musics} setMusicsSearch={props.setMusicsSearch} />
+      <View style={styles.menu}>
+        <Search musics={props.musics} setMusicsSearch={props.setMusicsSearch} />
+        <TouchableOpacity style={styles.playListButton}>
+          <Text style={styles.libraryText}>PlayList</Text>
+        </TouchableOpacity>
+      </View>
       <FlatList
         style={styles.libraryMusic}
         numColumns={1}
@@ -138,6 +143,17 @@ const PlayerButton: React.FC<Props> = (props) => {
 };
 
 const styles = StyleSheet.create({
+  menu : {
+    alignItems : 'center',
+    justifyContent : 'space-evenly',
+    flexDirection : 'row',
+  },
+  playListButton: {
+    flex : 1,
+    textAlign: "center",
+    textTransform: "capitalize",
+    marginLeft: 10,
+  },
   body: {
     flex: 1,
     alignItems: "center",
@@ -158,7 +174,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     padding: 10,
     // borderWidth: 2,
-    margin: 10,
+    margin: 2,
     backgroundColor: "rgba(100,100,100,0.1)",
     borderRadius: 10,
   },
@@ -168,11 +184,11 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     padding: 10,
     // borderWidth: 2,
-    margin: 10,
+    margin: 2,
     borderRadius: 10,
   },
   background: {
-    height: "80%",
+    height : Dimensions.get("screen").height *0.75,
     width: Dimensions.get("window").width,
     paddingLeft: 10,
     paddingRight: 10,
@@ -207,7 +223,7 @@ const styles = StyleSheet.create({
     alignItems: "flex-start",
   },
   libraryMusic: {
-    flex: 1,
+    flex : 1,
   },
 });
 

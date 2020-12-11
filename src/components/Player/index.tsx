@@ -166,7 +166,7 @@ const Player: React.FC = () => {
 
   const changeMusic = (index: number) => {
     const song =
-    musicsSearch[musicsSearch.findIndex((songs) => songs.index === index)];
+      musicsSearch[musicsSearch.findIndex((songs) => songs.index === index)];
     setMusic(song);
     createSound(song)
       .then((sound) => {
@@ -279,31 +279,36 @@ const Player: React.FC = () => {
         style={styles.displayMusicContainer}
         source={require("../../../assets/background.png")}
       >
-        <Library
-          setMusicsSearch={setMusicsSearch}
-          musicsSearch={musicsSearch}
-          musics={musics}
-          changeMusic={changeMusic}
-          musicName={music.name}
-        />
+        <View style={styles.library}>
+          <Library
+            setMusicsSearch={setMusicsSearch}
+            musicsSearch={musicsSearch}
+            musics={musics}
+            changeMusic={changeMusic}
+            musicName={music.name}
+          />
+          <ScrollView style={styles.body}>
+            <View style={styles.menus}>
+              <Text style={styles.musicName}>
+                {music.name.substring(0, music.name.lastIndexOf("."))} -{" "}
+                {music.album}
+              </Text>
+              <ProgressBar
+                changeMusicTime={changeMusicTime}
+                currentTime={count}
+                durationTime={Math.floor(music.duration)}
+              />
+              <Controllers
+                soundObject={soundObject}
+                forwardMusic={forwardMusic}
+                backwardMusic={backwardMusic}
+                pauseMusic={pauseMusic}
+                startMusic={startMusic}
+              />
+            </View>
+          </ScrollView>
+        </View>
       </ImageBackground>
-      <View style={styles.menus}>
-        <Text style={styles.musicName}>
-          {music.name.substring(0, music.name.lastIndexOf("."))} - {music.album}
-        </Text>
-        <ProgressBar
-          changeMusicTime={changeMusicTime}
-          currentTime={count}
-          durationTime={Math.floor(music.duration)}
-        />
-        <Controllers
-          soundObject={soundObject}
-          forwardMusic={forwardMusic}
-          backwardMusic={backwardMusic}
-          pauseMusic={pauseMusic}
-          startMusic={startMusic}
-        />
-      </View>
     </View>
   );
 };
@@ -318,7 +323,6 @@ const styles = StyleSheet.create({
   displayMusicContainer: {
     display: "flex",
     alignItems: "center",
-    justifyContent: "center",
     backgroundColor: "#3E4040",
   },
 
@@ -330,12 +334,12 @@ const styles = StyleSheet.create({
   },
   menus: {
     flex: 1,
-    alignItems: "center",
-    justifyContent: "center",
     position: "relative",
     backgroundColor: "black",
     borderTopColor: "white",
     borderTopWidth: 2,
+    alignItems : 'center',
+    justifyContent : 'center',
   },
   image: {
     flex: 1,

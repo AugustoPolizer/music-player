@@ -42,13 +42,13 @@ const Search: React.FC<Props> = (props) => {
 
 const styles = StyleSheet.create({
   searchContainer: {
-    width: "100%",
+    flex : 1,
     flexDirection: "row",
     paddingBottom: 10
   },
   searchInput: {
     textAlign: "center",
-    width: "90%",
+    width : '95%',
     marginLeft: 10,
     backgroundColor: "rgba(100,100,100,0.1)",
     borderRadius: 20,
