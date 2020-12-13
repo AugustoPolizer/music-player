@@ -95,8 +95,9 @@ const PlayerButton: React.FC<Props> = (props) => {
       </View>
       {showPlaylist ? (
         <Playlist
-          musics={props.musicsSearch}
+          musics={props.musics}
           setMusicsSearch={props.setMusicsSearch}
+          setShowPlaylist={setShowPlaylist}
         />
       ) : (
         <View style={styles.body}>

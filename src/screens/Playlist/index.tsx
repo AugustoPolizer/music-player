@@ -7,6 +7,7 @@ import { Music } from "../../types/commons";
 export type Props = {
   musics: Music[];
   setMusicsSearch : Function,
+  setShowPlaylist : Function,
 };
 
 
@@ -112,7 +113,10 @@ const Playlist: React.FC<Props> = (props) => {
             renderItem={({ item }) => {
               return (
                 <View style={styles.body} key={item}>
-                  <TouchableOpacity style={styles.playListButton} onPress={()=>{AsyncStorage.getItem(item).then((result : any) =>props.setMusicsSearch(JSON.parse(result)))}}>
+                  <TouchableOpacity style={styles.playListButton} onPress={()=>{
+                    AsyncStorage.getItem(item).then((result : any) =>props.setMusicsSearch(JSON.parse(result)));
+                    props.setShowPlaylist(false)
+                  }}>
                     <Text style={styles.playlistText}>{item}</Text>
                   </TouchableOpacity>
                 </View>
