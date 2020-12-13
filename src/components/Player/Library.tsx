@@ -5,17 +5,15 @@ import {
   Image,
   View,
   Dimensions,
-  ListViewComponent,
-  ListViewBase,
 } from "react-native";
 import {
   FlatList,
-  ScrollView,
   TouchableOpacity,
 } from "react-native-gesture-handler";
 import Search from "../search";
 import { Music } from "../../types/commons";
 import { SafeAreaView } from "react-native-safe-area-context";
+import Playlist from "../../screens/Playlist";
 
 export type ItemProps = {
   music: Music;
@@ -55,6 +53,7 @@ export type Props = {
 };
 
 const PlayerButton: React.FC<Props> = (props) => {
+  const [showPlaylist, setShowPlaylist] = useState<boolean>(false);
   /* const [musicsSearch, setMusicsSearch] = useState<Music[]>(); */
 
   /*   const filterMusicsBySearch = (text : string) => {
@@ -85,71 +84,97 @@ const PlayerButton: React.FC<Props> = (props) => {
     <SafeAreaView style={styles.background}>
       <View style={styles.menu}>
         <Search musics={props.musics} setMusicsSearch={props.setMusicsSearch} />
-        <TouchableOpacity style={styles.playListButton}>
-          <Text style={styles.libraryText}>PlayList</Text>
+        <TouchableOpacity
+          onPress={() => setShowPlaylist(!showPlaylist)}
+          style={styles.playListButton}
+        >
+          <Text style={styles.libraryText}>
+            {showPlaylist ? "Library" : "Playlist"}
+          </Text>
         </TouchableOpacity>
       </View>
-      <FlatList
-        style={styles.libraryMusic}
-        numColumns={1}
-        initialNumToRender={10}
-        data={albums}
-        renderItem={({ item }) => (
-          <View style={styles.body}>
-            <TouchableOpacity
-              style={styles.displayer}
-              onPress={() => setAlbumToShow(item === albumToShow ? "" : item)}
-            >
-              <View style={styles.albumLine}>
-                <Image
-                  style={styles.tinyLogo}
-                  source={require("../../../assets/albumIcon.png")}
-                />
-                <Text style={styles.libraryText}>{item}</Text>
+      {showPlaylist ? (
+        <Playlist
+          musics={props.musicsSearch}
+          setMusicsSearch={props.setMusicsSearch}
+        />
+      ) : (
+        <View style={styles.body}>
+          <FlatList
+            style={styles.libraryMusic}
+            numColumns={1}
+            initialNumToRender={10}
+            data={albums}
+            renderItem={({ item }) => (
+              <View style={styles.body}>
+                {props.musicsSearch.filter((music) => {
+                  return music.album === item;
+                }).length > 0 ? (
+                  <View>
+                    <TouchableOpacity
+                      style={styles.displayer}
+                      onPress={() =>
+                        setAlbumToShow(item === albumToShow ? "" : item)
+                      }
+                    >
+                      <View style={styles.albumLine}>
+                        <Image
+                          style={styles.tinyLogo}
+                          source={require("../../../assets/albumIcon.png")}
+                        />
+                        <Text style={styles.libraryText}>{item}</Text>
+                      </View>
+                    </TouchableOpacity>
+                    <View>
+                      {item === albumToShow ? (
+                        <FlatList
+                          style={styles.libraryMusic}
+                          data={props.musicsSearch.filter((music) => {
+                            return music.album === item;
+                          })}
+                          numColumns={1}
+                          initialNumToRender={10}
+                          renderItem={({ item }) => {
+                            return (
+                              <RenderMusicItem
+                                music={item}
+                                current={
+                                  item.name == props.musicName ? true : false
+                                }
+                                changeMusic={props.changeMusic}
+                              />
+                            );
+                          }}
+                          keyExtractor={(item) => item.uri}
+                          extraData={props.musics}
+                        />
+                      ) : (
+                        false
+                      )}
+                    </View>
+                  </View>
+                ) : (
+                  false
+                )}
               </View>
-            </TouchableOpacity>
-            <View>
-              {item === albumToShow ? (
-                <FlatList
-                  style={styles.libraryMusic}
-                  data={props.musics.filter((music) => {
-                    return music.album === item;
-                  })}
-                  numColumns={1}
-                  initialNumToRender={10}
-                  renderItem={({ item }) => {
-                    return (
-                      <RenderMusicItem
-                        music={item}
-                        current={item.name == props.musicName ? true : false}
-                        changeMusic={props.changeMusic}
-                      />
-                    );
-                  }}
-                  keyExtractor={(item) => item.uri}
-                  extraData={props.musics}
-                />
-              ) : (
-                false
-              )}
-            </View>
-          </View>
-        )}
-        keyExtractor={(item) => item}
-        extraData={props.musics}
-      ></FlatList>
+            )}
+            keyExtractor={(item) => item}
+            extraData={props.musics}
+          ></FlatList>
+        </View>
+      )}
     </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
-  menu : {
-    alignItems : 'center',
-    justifyContent : 'space-evenly',
-    flexDirection : 'row',
+  menu: {
+    alignItems: "center",
+    justifyContent: "space-evenly",
+    flexDirection: "row",
   },
   playListButton: {
-    flex : 1,
+    flex: 1,
     textAlign: "center",
     textTransform: "capitalize",
     marginLeft: 10,
@@ -188,7 +213,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
   },
   background: {
-    height : Dimensions.get("screen").height *0.75,
+    height: Dimensions.get("screen").height * 0.75,
     width: Dimensions.get("window").width,
     paddingLeft: 10,
     paddingRight: 10,
@@ -223,7 +248,7 @@ const styles = StyleSheet.create({
     alignItems: "flex-start",
   },
   libraryMusic: {
-    flex : 1,
+    flex: 1,
   },
 });
 

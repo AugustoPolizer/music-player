@@ -32,7 +32,8 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   playerContainer: {
-    flex: 1,
+    height : Dimensions.get('screen').height,
+    width : Dimensions.get('screen').width,
   },
 });
 

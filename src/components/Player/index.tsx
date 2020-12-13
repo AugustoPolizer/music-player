@@ -4,7 +4,6 @@ import {
   Text,
   StyleSheet,
   ImageBackground,
-  Dimensions,
 } from "react-native";
 import * as MediaLibrary from "expo-media-library";
 import { Audio } from "expo-av";
@@ -12,7 +11,6 @@ import Controllers from "./controllers";
 import { Music, Pagination } from "../../types/commons";
 import Library from "./Library";
 import ProgressBar from "./progressBar";
-import { ScrollView } from "react-native-gesture-handler";
 
 const Player: React.FC = () => {
   const [count, setCount] = useState<number>(0);
@@ -104,7 +102,7 @@ const Player: React.FC = () => {
           setSoundObject(null);
         });
     }
-  }, [musics]);
+  }, []);
 
   useEffect(() => {
     try {
@@ -287,7 +285,6 @@ const Player: React.FC = () => {
             changeMusic={changeMusic}
             musicName={music.name}
           />
-          <ScrollView style={styles.body}>
             <View style={styles.menus}>
               <Text style={styles.musicName}>
                 {music.name.substring(0, music.name.lastIndexOf("."))} -{" "}
@@ -306,7 +303,6 @@ const Player: React.FC = () => {
                 startMusic={startMusic}
               />
             </View>
-          </ScrollView>
         </View>
       </ImageBackground>
     </View>
