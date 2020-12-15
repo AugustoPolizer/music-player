@@ -9,6 +9,7 @@ export type Props = {
   musics: Music[];
   setMusicsSearch: Function;
   setShowPlaylist: Function;
+  textForSearch : string,
 };
 
 const Playlist: React.FC<Props> = (props) => {
@@ -17,6 +18,7 @@ const Playlist: React.FC<Props> = (props) => {
   const [arrayMusics, setArrayMusics] = useState<Array<Music>>([]);
   const [keys, setKeys] = useState<Array<string>>([]);
   const [update, setUpdate] = useState<boolean>(false);
+
   useEffect(() => {
     AsyncStorage.getAllKeys().then(setKeys);
   }, [update]);
@@ -74,7 +76,7 @@ const Playlist: React.FC<Props> = (props) => {
 
           <FlatList
             style={styles.libraryMusic}
-            data={props.musics}
+            data={props.musics.filter((e)=>e.name.toUpperCase().includes(props.textForSearch.toUpperCase()))}
             numColumns={1}
             initialNumToRender={10}
             renderItem={({ item }) => {
@@ -127,11 +129,16 @@ const Playlist: React.FC<Props> = (props) => {
           <View style={styles.middle}>
             <Text style={styles.playlistText}>Your's playlists</Text>
           </View>
-          {keys.length > 0 ? (
+          {keys.length === 0 ? (
+             <View style={styles.wupusPlaylist}>
+             <Image  style={styles.imageWumpus} resizeMode={"contain"} resizeMethod={"scale"} width={50} height={50} source={require('../../../assets/wumpus.gif')}  />
+             <Text>There isn't nothing to Wumpus hear here.</Text>
+           </View>
+          ) : (
             <View style={styles.playlist}>
               <FlatList
                 style={styles.body}
-                data={keys}
+                data={keys.filter((e)=>e.toUpperCase().includes(props.textForSearch.toUpperCase()))}
                 numColumns={2}
                 initialNumToRender={10}
                 renderItem={({ item }) => {
@@ -183,12 +190,7 @@ const Playlist: React.FC<Props> = (props) => {
                 extraData={props.musics}
               />
             </View>
-          ) : (
-            <View style={styles.wupusPlaylist}>
-              <Image  style={styles.imageWumpus} resizeMode={"contain"} resizeMethod={"scale"} width={50} height={50} source={require('../../../assets/wumpus.gif')}  />
-              <Text>There isn't nothing to Wumpus hear here.</Text>
-            </View>
-            
+           
           )}
         </View>
       )}
@@ -207,9 +209,9 @@ const styles = StyleSheet.create({
     height : 220,
   },
   titlePlaylist: {
-    color: "#0101DF",
+    color: "orange",
     fontWeight: "bold",
-    fontSize: 16,
+    fontSize: 18,
     textAlign: "center",
     padding: 5,
     borderRadius: 20,
@@ -226,7 +228,7 @@ const styles = StyleSheet.create({
   },
   bodySetPLaylist: {
     width: Dimensions.get("screen").width / 2.4,
-    height: Dimensions.get("screen").height / 4,
+    height: Dimensions.get("screen").height / 6,
     alignItems: "center",
     padding: 10,
     borderRadius: 20,
@@ -240,9 +242,6 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     flexDirection: "row",
     margin: 10,
-    borderRadius: 20,
-    borderWidth: 2,
-    borderColor: "black",
   },
   playlistDisplay: {
     flex: 1,
@@ -316,9 +315,10 @@ const styles = StyleSheet.create({
     textAlign: "center",
     marginLeft: 10,
     borderRadius: 20,
-    borderBottomWidth: 2,
-    borderBottomColor: "black",
     color: "black",
+    borderBottomColor : 'black',
+    borderBottomWidth : 2,
+    backgroundColor : 'rgba(0,0,0,0.1)'
   },
   playListButton: {
     alignItems: "center",
@@ -331,8 +331,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     textAlign: "center",
-    borderLeftWidth: 2,
-    borderColor: "black",
     height: "100%",
     padding: 10,
   },
@@ -340,8 +338,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     textAlign: "center",
-    borderRightWidth: 2,
-    borderColor: "black",
     height: "100%",
     padding: 10,
   },

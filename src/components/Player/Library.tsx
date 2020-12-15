@@ -56,6 +56,7 @@ const PlayerButton: React.FC<Props> = (props) => {
   } */
   const [albums, setAlbums] = useState<Array<any>>([]);
   const [albumToShow, setAlbumToShow] = useState<string>("");
+  const [textForSearch, setTextForSearch] = useState<string>("");
   useEffect(() => {
     props.setMusicsSearch(props.musics);
     const array: Array<any> = [];
@@ -76,12 +77,18 @@ const PlayerButton: React.FC<Props> = (props) => {
   return (
     <SafeAreaView style={styles.background}>
       <View style={styles.menu}>
-        <Search musics={props.musics} setMusicsSearch={props.setMusicsSearch} />
+        <Search setTextForSearch={setTextForSearch} />
         <TouchableOpacity
           onPress={() => setShowPlaylist(!showPlaylist)}
           style={styles.playListButton}
         >
-          <Text style={showPlaylist ? styles.playlistButtonText : styles.playlistButtonTextBack}>
+          <Text
+            style={
+              showPlaylist
+                ? styles.playlistButtonText
+                : styles.playlistButtonTextBack
+            }
+          >
             {showPlaylist ? "Library" : "Playlists"}
           </Text>
         </TouchableOpacity>
@@ -91,6 +98,7 @@ const PlayerButton: React.FC<Props> = (props) => {
           musics={props.musics}
           setMusicsSearch={props.setMusicsSearch}
           setShowPlaylist={setShowPlaylist}
+          textForSearch = {textForSearch}
         />
       ) : (
         <View style={styles.body}>
@@ -101,9 +109,15 @@ const PlayerButton: React.FC<Props> = (props) => {
             data={albums}
             renderItem={({ item }) => (
               <View style={styles.body}>
-                {props.musicsSearch.filter((music) => {
-                  return music.album === item;
-                }).length > 0 ? (
+                {props.musicsSearch
+                  .filter((music) => {
+                    return music.album === item;
+                  })
+                  .filter((music) => {
+                    return music.name
+                      .toUpperCase()
+                      .includes(textForSearch.toUpperCase());
+                  }).length > 0 ? (
                   <View style={styles.body}>
                     <View style={styles.displayer}>
                       <TouchableOpacity
@@ -124,9 +138,15 @@ const PlayerButton: React.FC<Props> = (props) => {
                       {item === albumToShow ? (
                         <FlatList
                           style={styles.libraryMusic}
-                          data={props.musicsSearch.filter((music) => {
-                            return music.album === item;
-                          })}
+                          data={props.musicsSearch
+                            .filter((music) => {
+                              return music.album === item;
+                            })
+                            .filter((music) => {
+                              return music.name
+                                .toUpperCase()
+                                .includes(textForSearch.toUpperCase());
+                            })}
                           numColumns={1}
                           initialNumToRender={10}
                           renderItem={({ item }) => {
@@ -164,14 +184,14 @@ const PlayerButton: React.FC<Props> = (props) => {
 
 const styles = StyleSheet.create({
   playlistButtonTextBack: {
-    textAlign : 'center',
-    color : 'green',
-    fontWeight : 'bold',
+    textAlign: "center",
+    color: "green",
+    fontWeight: "bold",
   },
-  playlistButtonText:{
-    textAlign : 'center',
-    color : 'red',
-    fontWeight : 'bold',
+  playlistButtonText: {
+    textAlign: "center",
+    color: "red",
+    fontWeight: "bold",
   },
   albumText: {
     color: "orange",
@@ -179,7 +199,7 @@ const styles = StyleSheet.create({
     textAlign: "left",
     margin: 10,
     flexWrap: "wrap",
-    fontSize : 16,
+    fontSize: 16,
   },
   menu: {
     justifyContent: "space-around",
@@ -191,10 +211,10 @@ const styles = StyleSheet.create({
     marginLeft: 25,
     backgroundColor: "rgba(0,0,0,0.1)",
     borderRadius: 20,
-    height : 30,
-    width : 100,
-    alignItems : 'center',
-    justifyContent : 'center',
+    height: 30,
+    width: 100,
+    alignItems: "center",
+    justifyContent: "center",
   },
   body: {
     flex: 1,
@@ -210,7 +230,7 @@ const styles = StyleSheet.create({
     margin: 10,
     backgroundColor: "rgba(0,0,0,0.3)",
     borderRadius: 10,
-    width : '100%',
+    width: "100%",
   },
   musicLine: {
     width: "80%",

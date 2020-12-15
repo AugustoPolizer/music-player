@@ -332,8 +332,8 @@ const styles = StyleSheet.create({
   menus: {
     flex: 1,
     position: "relative",
-    backgroundColor: "black",
-    borderTopColor: "black",
+    backgroundColor: "#575758",
+    borderTopColor: "white",
     borderTopWidth: 2,
     alignItems : 'center',
     justifyContent : 'center',
