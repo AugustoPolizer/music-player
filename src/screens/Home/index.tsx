@@ -27,13 +27,10 @@ const Home: React.FC<Props> = ({ navigation }) => {
 };
 
 const styles = StyleSheet.create({
-  textLibrary: {
-    color: "white",
-    flex: 1,
-  },
   playerContainer: {
     height : Dimensions.get('screen').height,
     width : Dimensions.get('screen').width,
+    backgroundColor : 'white',
   },
 });
 

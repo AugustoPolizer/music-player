@@ -1,6 +1,6 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import React, { useState, useEffect } from "react";
-import { Text, View, StyleSheet, Dimensions, FlatList } from "react-native";
+import { Text, View, StyleSheet, Dimensions, FlatList, Image } from "react-native";
 import { TextInput, TouchableOpacity } from "react-native-gesture-handler";
 import { Music } from "../../types/commons";
 import Icon from "react-native-vector-icons/FontAwesome";
@@ -65,13 +65,13 @@ const Playlist: React.FC<Props> = (props) => {
             onChangeText={setplaylistName}
             style={styles.textInputPlaylist}
             placeholder="Playlist name"
-            placeholderTextColor="white"
+            placeholderTextColor="black"
             value={playlistName}
           />
           <View style={styles.middle}>
             <Text style={styles.playlistText}>Select songs</Text>
           </View>
-           
+
           <FlatList
             style={styles.libraryMusic}
             data={props.musics}
@@ -83,14 +83,17 @@ const Playlist: React.FC<Props> = (props) => {
                   <TouchableOpacity
                     onPress={() => {
                       setUpdate(!update);
-                      arrayMusics.filter((musics)=>musics.name === item.name).length > 0
+                      arrayMusics.filter((musics) => musics.name === item.name)
+                        .length > 0
                         ? arrayMusics.splice(arrayMusics.indexOf(item), 1)
                         : arrayMusics.push(item);
                     }}
                   >
                     <Text
                       style={
-                        arrayMusics.filter((musics)=>musics.name === item.name).length > 0
+                        arrayMusics.filter(
+                          (musics) => musics.name === item.name
+                        ).length > 0
                           ? styles.textIncludes
                           : styles.textExcludes
                       }
@@ -122,78 +125,114 @@ const Playlist: React.FC<Props> = (props) => {
             </Text>
           </TouchableOpacity>
           <View style={styles.middle}>
-            <Text style={styles.playlistText}>Your's playlist</Text>
+            <Text style={styles.playlistText}>Your's playlists</Text>
           </View>
-
-          <FlatList
-            style={styles.libraryMusic}
-            data={keys}
-            numColumns={1}
-            initialNumToRender={10}
-            renderItem={({ item }) => {
-              return (
-                <View style={styles.bodySetPLaylist}>
-                  <Text style={styles.title}>{item}</Text>
-                  <View style={styles.displayPlaylist} key={item}>
-                    <TouchableOpacity
-                      style={styles.playListButtonUpdate}
-                      onPress={async () => {
-                        setplaylistName(item);
-                        arrayMusics.splice(0, arrayMusics.length);
-                        await AsyncStorage.getItem(item)
-                          .then((result: any) =>
-                            arrayMusics.push(...JSON.parse(result))
-                          )
-                          .then((result) => setShowCreatePlaylist(true));
-                      }}
-                    >
-                      <Icon name={"magic"} size={20} color={"white"} />
-                    </TouchableOpacity>
-                    <TouchableOpacity
-                      style={styles.playListButton}
-                      onPress={async () => {
-                        await AsyncStorage.getItem(item).then((result: any) =>
-                          props.setMusicsSearch(JSON.parse(result))
-                        );
-                        props.setShowPlaylist(false);
-                      }}
-                    >
-                      <Icon name={"play"} size={20} color={"white"} />
-                    </TouchableOpacity>
-                    <TouchableOpacity
-                      style={styles.playListButtonTrash}
-                      onPress={async() => {
-                        await AsyncStorage.removeItem(item);
-                        setUpdate(!update);
-                      
-                      }}
-                    >
-                      <Icon name={"trash"} size={20} color={"white"} />
-                    </TouchableOpacity>
-                  </View>
-                </View>
-              );
-            }}
-            keyExtractor={(item: any) => item}
-            extraData={props.musics}
-          />
+          {keys.length > 0 ? (
+            <View style={styles.playlist}>
+              <FlatList
+                style={styles.body}
+                data={keys}
+                numColumns={2}
+                initialNumToRender={10}
+                renderItem={({ item }) => {
+                  return (
+                    <View style={styles.bodySetPLaylist}>
+                      <Text style={styles.titlePlaylist}>{item}</Text>
+                      <View style={styles.displayPlaylist} key={item}>
+                        <TouchableOpacity
+                          style={styles.playListButtonUpdate}
+                          onPress={async () => {
+                            setplaylistName(item);
+                            arrayMusics.splice(0, arrayMusics.length);
+                            await AsyncStorage.getItem(item)
+                              .then((result: any) =>
+                                arrayMusics.push(...JSON.parse(result))
+                              )
+                              .then((result) => setShowCreatePlaylist(true));
+                          }}
+                        >
+                          <Icon name={"magic"} size={20} color={"black"} />
+                        </TouchableOpacity>
+                        <TouchableOpacity
+                          style={styles.playListButton}
+                          onPress={async () => {
+                            await AsyncStorage.getItem(
+                              item
+                            ).then((result: any) =>
+                              props.setMusicsSearch(JSON.parse(result))
+                            );
+                            props.setShowPlaylist(false);
+                          }}
+                        >
+                          <Icon name={"play"} size={20} color={"red"} />
+                        </TouchableOpacity>
+                        <TouchableOpacity
+                          style={styles.playListButtonTrash}
+                          onPress={async () => {
+                            await AsyncStorage.removeItem(item);
+                            setUpdate(!update);
+                          }}
+                        >
+                          <Icon name={"trash"} size={20} color={"black"} />
+                        </TouchableOpacity>
+                      </View>
+                    </View>
+                  );
+                }}
+                keyExtractor={(item: any) => item}
+                extraData={props.musics}
+              />
+            </View>
+          ) : (
+            <View style={styles.wupusPlaylist}>
+              <Image  style={styles.imageWumpus} resizeMode={"contain"} resizeMethod={"scale"} width={50} height={50} source={require('../../../assets/wumpus.gif')}  />
+              <Text>There isn't nothing to Wumpus hear here.</Text>
+            </View>
+            
+          )}
         </View>
       )}
     </View>
   );
 };
 const styles = StyleSheet.create({
+  wupusPlaylist: {
+    alignItems :'center',
+    justifyContent : 'flex-start',
+  },
+  imageWumpus:{
+    alignItems : 'center',
+    justifyContent : 'center',
+    width : 220,
+    height : 220,
+  },
+  titlePlaylist: {
+    color: "#0101DF",
+    fontWeight: "bold",
+    fontSize: 16,
+    textAlign: "center",
+    padding: 5,
+    borderRadius: 20,
+  },
+  playlist: {
+    flex: 1,
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-evenly",
+  },
   middle: {
     alignItems: "center",
     justifyContent: "center",
   },
   bodySetPLaylist: {
-    flex: 1,
+    width: Dimensions.get("screen").width / 2.4,
+    height: Dimensions.get("screen").height / 4,
     alignItems: "center",
     padding: 10,
     borderRadius: 20,
     marginBottom: 10,
-    backgroundColor: "rgba(255,255,255,0.2)",
+    backgroundColor: "rgba(0,0,0,0.1)",
+    margin: 10,
   },
   displayPlaylist: {
     flex: 1,
@@ -203,7 +242,7 @@ const styles = StyleSheet.create({
     margin: 10,
     borderRadius: 20,
     borderWidth: 2,
-    borderColor: "white",
+    borderColor: "black",
   },
   playlistDisplay: {
     flex: 1,
@@ -223,19 +262,23 @@ const styles = StyleSheet.create({
     fontSize: 14,
     textAlign: "center",
     margin: 10,
+    backgroundColor: "rgba(0,0,0,0.1)",
+    borderRadius: 20,
   },
   textExcludes: {
-    color: "white",
+    color: "black",
     fontSize: 14,
     textAlign: "center",
     margin: 10,
+    backgroundColor: "rgba(0,0,0,0.1)",
+    borderRadius: 20,
   },
   title: {
     fontSize: 14,
-    color: "white",
+    color: "black",
     marginTop: 20,
     textAlign: "center",
-    backgroundColor: "rgba(255,255,255,0.2)",
+    backgroundColor: "rgba(0,0,0,0.1)",
     borderRadius: 20,
     padding: 10,
     width: "100%",
@@ -253,14 +296,16 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     textAlign: "center",
     margin: 10,
+    fontWeight: "bold",
   },
   cancelButton: {
     backgroundColor: "red",
     padding: 10,
     borderRadius: 20,
-    color: "white",
+    color: "black",
     textAlign: "center",
     margin: 10,
+    fontWeight: "bold",
   },
   bodyCreatePlaylist: {
     flex: 1,
@@ -272,8 +317,8 @@ const styles = StyleSheet.create({
     marginLeft: 10,
     borderRadius: 20,
     borderBottomWidth: 2,
-    borderBottomColor: "white",
-    color: "white",
+    borderBottomColor: "black",
+    color: "black",
   },
   playListButton: {
     alignItems: "center",
@@ -287,7 +332,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     textAlign: "center",
     borderLeftWidth: 2,
-    borderColor: "white",
+    borderColor: "black",
     height: "100%",
     padding: 10,
   },
@@ -296,7 +341,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     textAlign: "center",
     borderRightWidth: 2,
-    borderColor: "white",
+    borderColor: "black",
     height: "100%",
     padding: 10,
   },
@@ -316,7 +361,7 @@ const styles = StyleSheet.create({
     textTransform: "capitalize",
     flexWrap: "wrap",
     padding: 10,
-    color: "white",
+    color: "black",
     fontSize: 16,
     fontWeight: "bold",
     margin: 10,

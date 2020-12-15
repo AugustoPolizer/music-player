@@ -273,10 +273,10 @@ const Player: React.FC = () => {
 
   return (
     <View style={styles.body}>
-      <ImageBackground
+    {/*   <ImageBackground
         style={styles.displayMusicContainer}
         source={require("../../../assets/background.png")}
-      >
+      > */}
         <View style={styles.library}>
           <Library
             setMusicsSearch={setMusicsSearch}
@@ -304,7 +304,7 @@ const Player: React.FC = () => {
               />
             </View>
         </View>
-      </ImageBackground>
+     {/*  </ImageBackground> */}
     </View>
   );
 };
@@ -312,6 +312,7 @@ const Player: React.FC = () => {
 const styles = StyleSheet.create({
   body: {
     flex: 1,
+   
   },
   library: {
     flexGrow: 5,
@@ -323,16 +324,16 @@ const styles = StyleSheet.create({
   },
 
   musicName: {
-    color: "white",
     textTransform: "capitalize",
     flexWrap: "wrap",
     margin: 10,
+    color : 'white',
   },
   menus: {
     flex: 1,
     position: "relative",
     backgroundColor: "black",
-    borderTopColor: "white",
+    borderTopColor: "black",
     borderTopWidth: 2,
     alignItems : 'center',
     justifyContent : 'center',

@@ -1,15 +1,6 @@
 import React, { useEffect, useState } from "react";
-import {
-  Text,
-  StyleSheet,
-  Image,
-  View,
-  Dimensions,
-} from "react-native";
-import {
-  FlatList,
-  TouchableOpacity,
-} from "react-native-gesture-handler";
+import { Text, StyleSheet, Image, View, Dimensions } from "react-native";
+import { FlatList, TouchableOpacity } from "react-native-gesture-handler";
 import Search from "../search";
 import { Music } from "../../types/commons";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -36,7 +27,9 @@ const RenderMusicItem: React.FC<ItemProps> = (props) => {
             uri: "https://reactnative.dev/img/tiny_logo.png",
           }}
         />
-        <Text style={styles.libraryText}>
+        <Text
+          style={props.current ? styles.libraryTextRed : styles.libraryText}
+        >
           {props.music.name.substring(0, props.music.name.lastIndexOf("."))}
         </Text>
       </View>
@@ -88,8 +81,8 @@ const PlayerButton: React.FC<Props> = (props) => {
           onPress={() => setShowPlaylist(!showPlaylist)}
           style={styles.playListButton}
         >
-          <Text style={styles.libraryText}>
-            {showPlaylist ? "Library" : "Playlist"}
+          <Text style={showPlaylist ? styles.playlistButtonText : styles.playlistButtonTextBack}>
+            {showPlaylist ? "Library" : "Playlists"}
           </Text>
         </TouchableOpacity>
       </View>
@@ -111,22 +104,23 @@ const PlayerButton: React.FC<Props> = (props) => {
                 {props.musicsSearch.filter((music) => {
                   return music.album === item;
                 }).length > 0 ? (
-                  <View>
-                    <TouchableOpacity
-                      style={styles.displayer}
-                      onPress={() =>
-                        setAlbumToShow(item === albumToShow ? "" : item)
-                      }
-                    >
-                      <View style={styles.albumLine}>
-                        <Image
-                          style={styles.tinyLogo}
-                          source={require("../../../assets/albumIcon.png")}
-                        />
-                        <Text style={styles.libraryText}>{item}</Text>
-                      </View>
-                    </TouchableOpacity>
-                    <View>
+                  <View style={styles.body}>
+                    <View style={styles.displayer}>
+                      <TouchableOpacity
+                        onPress={() =>
+                          setAlbumToShow(item === albumToShow ? "" : item)
+                        }
+                      >
+                        <View style={styles.albumLine}>
+                          <Image
+                            style={styles.tinyLogo}
+                            source={require("../../../assets/albumIcon.png")}
+                          />
+                          <Text style={styles.albumText}>{item}</Text>
+                        </View>
+                      </TouchableOpacity>
+                    </View>
+                    <View style={styles.body}>
                       {item === albumToShow ? (
                         <FlatList
                           style={styles.libraryMusic}
@@ -169,20 +163,43 @@ const PlayerButton: React.FC<Props> = (props) => {
 };
 
 const styles = StyleSheet.create({
+  playlistButtonTextBack: {
+    textAlign : 'center',
+    color : 'green',
+    fontWeight : 'bold',
+  },
+  playlistButtonText:{
+    textAlign : 'center',
+    color : 'red',
+    fontWeight : 'bold',
+  },
+  albumText: {
+    color: "orange",
+    fontWeight: "bold",
+    textAlign: "left",
+    margin: 10,
+    flexWrap: "wrap",
+    fontSize : 16,
+  },
   menu: {
-    alignItems: "center",
-    justifyContent: "space-evenly",
+    justifyContent: "space-around",
     flexDirection: "row",
   },
   playListButton: {
-    flex: 1,
     textAlign: "center",
     textTransform: "capitalize",
-    marginLeft: 10,
+    marginLeft: 25,
+    backgroundColor: "rgba(0,0,0,0.1)",
+    borderRadius: 20,
+    height : 30,
+    width : 100,
+    alignItems : 'center',
+    justifyContent : 'center',
   },
   body: {
     flex: 1,
-    alignItems: "center",
+    alignItems: "flex-start",
+    justifyContent: "flex-start",
   },
   musicLineActive: {
     alignItems: "center",
@@ -191,20 +208,23 @@ const styles = StyleSheet.create({
     padding: 10,
     // borderWidth: 2,
     margin: 10,
-    backgroundColor: "rgba(255,255,255,0.1)",
+    backgroundColor: "rgba(0,0,0,0.3)",
     borderRadius: 10,
+    width : '100%',
   },
   musicLine: {
+    width: "80%",
     alignItems: "center",
     justifyContent: "flex-start",
     flexDirection: "row",
     padding: 10,
     // borderWidth: 2,
     margin: 2,
-    backgroundColor: "rgba(100,100,100,0.1)",
+    backgroundColor: "rgba(0,0,0,0.1)",
     borderRadius: 10,
   },
   albumLine: {
+    width: "90%",
     alignItems: "center",
     justifyContent: "flex-start",
     flexDirection: "row",
@@ -219,13 +239,21 @@ const styles = StyleSheet.create({
     paddingLeft: 10,
     paddingRight: 10,
   },
+  libraryTextRed: {
+    textAlign: "left",
+    textTransform: "capitalize",
+    flexWrap: "wrap",
+    padding: 10,
+    marginRight: 20,
+    color: "red",
+  },
   libraryText: {
     textAlign: "left",
     textTransform: "capitalize",
     flexWrap: "wrap",
     padding: 10,
-    color: "white",
     marginRight: 20,
+    color: "black",
   },
   title: {
     textAlign: "center",
@@ -233,7 +261,6 @@ const styles = StyleSheet.create({
     flexWrap: "wrap",
     padding: 10,
     fontSize: 20,
-    color: "white",
   },
   tinyLogo: {
     width: 50,
@@ -241,11 +268,13 @@ const styles = StyleSheet.create({
     borderRadius: 10,
   },
   displayer: {
-    width: "90%",
+    flex: 1,
+    alignItems: "center",
+    justifyContent: "center",
   },
   displayerAlbum: {
     margin: 10,
-    backgroundColor: "rgba(255,255,255,0.1)",
+    backgroundColor: "rgba(0,0,0,0.1)",
     alignItems: "flex-start",
   },
   libraryMusic: {

@@ -22,7 +22,7 @@ const Search: React.FC<Props> = (props) => {
         if (textInput)
           textInput.focus();
       }}>
-        <Icon name="search" size={20} color="white" />
+        <Icon name="search" size={20} color="black" />
       </TouchableOpacity>
       <TextInput
         onChangeText={(text)=>{searcher(text,props.setMusicsSearch,props.musics)}}
@@ -32,7 +32,7 @@ const Search: React.FC<Props> = (props) => {
             setTextInput(input)
         }}
         placeholder="Search"
-        placeholderTextColor="white"
+        placeholderTextColor="black"
       />
 
 
@@ -53,8 +53,8 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(100,100,100,0.1)",
     borderRadius: 20,
     borderBottomWidth: 2,
-    borderBottomColor: "white",
-    color: "white",
+    borderBottomColor: "black",
+    color: "black",
   },
 })
 
