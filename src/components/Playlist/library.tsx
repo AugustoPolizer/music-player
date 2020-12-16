@@ -5,6 +5,7 @@ import Search from "../Search/search";
 import { Music } from "../../types/commons";
 import { SafeAreaView } from "react-native-safe-area-context";
 import Playlist from "./playlist";
+import Wumpus from "../Playlist/wumpus"
 
 export type ItemProps = {
   music: Music;
@@ -172,7 +173,6 @@ const PlayerButton: React.FC<Props> = (props) => {
           ></FlatList>
         </View>
       )}
-      
     </SafeAreaView>
   );
 };

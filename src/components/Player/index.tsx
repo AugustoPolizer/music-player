@@ -9,8 +9,9 @@ import ProgressBar from "./progressBar";
 import { LogBox } from 'react-native';
 
 const Player: React.FC = () => {
+  LogBox.ignoreAllLogs();
   const [count, setCount] = useState<number>(0);
-  const [soundObject, setSoundObject] = useState(new Audio.Sound());
+  const [soundObject, setSoundObject] = useState(new Audio.Sound())
   const [permission, setPermission] = useState<Audio.PermissionResponse | null>(
     null
   );
@@ -40,7 +41,6 @@ const Player: React.FC = () => {
     },
   ]);
   useEffect(() => {
-    LogBox.ignoreAllLogs();
     musics.splice(0, musics.length);
     MediaLibrary.requestPermissionsAsync().then(async (permission) => {
       if (permission.granted) {
@@ -121,20 +121,15 @@ const Player: React.FC = () => {
     });
   };
 
-  const createSound = async (music: Music) => {
-    await Audio.Sound.createAsync(
+  const createSound = async (music: Music): Promise<Audio.Sound> => {
+    const { sound, status } = await Audio.Sound.createAsync(
       { uri: music.uri },
       { progressUpdateIntervalMillis: 1000 },
-    ).then(result=>setSoundObject(result.sound)).catch(alert);
-  };
-  const playMusic = () => {
-    try {
-      if (soundObject) {
-        soundObject.playAsync();
-      }
-    } catch (error) {
-      alert(error);
-    }
+      statusHandler
+    );
+    
+    return sound;
+  
   };
   const stopAllMusic = () => {
     try {
@@ -147,14 +142,17 @@ const Player: React.FC = () => {
     }
   };
 
-  const changeMusic = async(index: number) => {
+  const changeMusic = (index: number) => {
     const song =
       musicsSearch[musicsSearch.findIndex((songs) => songs.index === index)];
     setMusic(song);
-    await createSound(song)
-      .catch((error) => alert(error))
+    createSound(song)
+      .then((sound) => {
+        setSoundObject(sound);
+      })
+      .catch((error)=>alert(error))
       .then(stopAllMusic)
-      .then(playMusic)
+      .then(startMusic)
       .catch((error) => {
         alert(error);
       });
@@ -181,8 +179,7 @@ const Player: React.FC = () => {
     });
   };
 
-  const statusHandler = () => {
-  };
+  const statusHandler = (status: any) => {};
 
   const forwardMusic = () => {
     if (
