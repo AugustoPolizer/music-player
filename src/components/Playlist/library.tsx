@@ -5,7 +5,7 @@ import Search from "../Search/search";
 import { Music } from "../../types/commons";
 import { SafeAreaView } from "react-native-safe-area-context";
 import Playlist from "./playlist";
-import Wumpus from "../Playlist/wumpus"
+import Wumpus from "../Playlist/wumpus";
 
 export type ItemProps = {
   music: Music;
@@ -93,84 +93,95 @@ const PlayerButton: React.FC<Props> = (props) => {
           musics={props.musics}
           setMusicsSearch={props.setMusicsSearch}
           setShowPlaylist={setShowPlaylist}
-          textForSearch = {textForSearch}
+          textForSearch={textForSearch}
         />
       ) : (
         <View style={styles.body}>
-          <FlatList
-            style={styles.libraryMusic}
-            numColumns={1}
-            initialNumToRender={10}
-            data={albums}
-            renderItem={({ item }) => (
-              <View style={styles.body}>
-                {props.musicsSearch
-                  .filter((music) => {
-                    return music.album === item;
-                  })
-                  .filter((music) => {
-                    return music.name
-                      .toUpperCase()
-                      .includes(textForSearch.toUpperCase());
-                  }).length > 0 ? (
-                  <View style={styles.body}>
-                    <View style={styles.displayer}>
-                      <TouchableOpacity
-                        onPress={() =>
-                          setAlbumToShow(item === albumToShow ? "" : item)
-                        }
-                      >
-                        <View style={styles.albumLine}>
-                          <Image
-                            style={styles.tinyLogo}
-                            source={require("../../../assets/albumIcon.png")}
-                          />
-                          <Text style={styles.albumText}>{item}</Text>
-                        </View>
-                      </TouchableOpacity>
-                    </View>
+          {props.musicsSearch.filter((song) => {
+            return song.name
+              .toUpperCase()
+              .includes(textForSearch.toUpperCase());
+          }).length > 0 ? (
+            <FlatList
+              style={styles.libraryMusic}
+              numColumns={1}
+              initialNumToRender={10}
+              data={albums}
+              renderItem={({ item }) => (
+                <View style={styles.body}>
+                  {props.musicsSearch
+                    .filter((music) => {
+                      return music.album === item;
+                    })
+                    .filter((music) => {
+                      return music.name
+                        .toUpperCase()
+                        .includes(textForSearch.toUpperCase());
+                    }).length > 0 ? (
                     <View style={styles.body}>
-                      {item === albumToShow ? (
-                        <FlatList
-                          style={styles.libraryMusic}
-                          data={props.musicsSearch
-                            .filter((music) => {
-                              return music.album === item;
-                            })
-                            .filter((music) => {
-                              return music.name
-                                .toUpperCase()
-                                .includes(textForSearch.toUpperCase());
-                            })/* .sort((song1,song2)=>song2.name > song1.name ? -1 : 1) */}
-                          numColumns={1}
-                          initialNumToRender={10}
-                          renderItem={({ item }) => {
-                            return (
-                              <RenderMusicItem
-                                music={item}
-                                current={
-                                  item.name == props.musicName ? true : false
-                                }
-                                changeMusic={props.changeMusic}
-                              />
-                            );
-                          }}
-                          keyExtractor={(item) => item.uri}
-                          extraData={props.musics}
-                        />
-                      ) : (
-                        false
-                      )}
+                      <View style={styles.displayer}>
+                        <TouchableOpacity
+                          onPress={() =>
+                            setAlbumToShow(item === albumToShow ? "" : item)
+                          }
+                        >
+                          <View style={styles.albumLine}>
+                            <Image
+                              style={styles.tinyLogo}
+                              source={require("../../../assets/albumIcon.png")}
+                            />
+                            <Text style={styles.albumText}>{item}</Text>
+                          </View>
+                        </TouchableOpacity>
+                      </View>
+                      <View style={styles.body}>
+                        {item === albumToShow ? (
+                          <FlatList
+                            style={styles.libraryMusic}
+                            data={props.musicsSearch
+                              .filter((music) => {
+                                return music.album === item;
+                              })
+                              .filter((music) => {
+                                return music.name
+                                  .toUpperCase()
+                                  .includes(textForSearch.toUpperCase());
+                              })}
+                            numColumns={1}
+                            initialNumToRender={10}
+                            renderItem={({ item }) => {
+                              return (
+                                <RenderMusicItem
+                                  music={item}
+                                  current={
+                                    item.name == props.musicName ? true : false
+                                  }
+                                  changeMusic={props.changeMusic}
+                                />
+                              );
+                            }}
+                            keyExtractor={(item) => item.uri}
+                            extraData={props.musics}
+                          />
+                        ) : (
+                          false
+                        )}
+                      </View>
                     </View>
-                  </View>
-                ) : (
-                  false
-                )}
-              </View>
-            )}
-            keyExtractor={(item) => item}
-            extraData={props.musics}
-          ></FlatList>
+                  ) : (
+                    false
+                  )}
+                </View>
+              )}
+              keyExtractor={(item) => item}
+              extraData={props.musics}
+            ></FlatList>
+          ) : (
+            <View style={styles.wumpusCenter}>
+              <Wumpus/>
+            </View>
+            
+          )}
         </View>
       )}
     </SafeAreaView>
@@ -178,6 +189,10 @@ const PlayerButton: React.FC<Props> = (props) => {
 };
 
 const styles = StyleSheet.create({
+  wumpusCenter : {
+    width : '100%',
+    alignItems : 'center',
+  },
   playlistButtonTextBack: {
     textAlign: "center",
     color: "green",
