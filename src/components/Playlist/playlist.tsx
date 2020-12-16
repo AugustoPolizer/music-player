@@ -82,7 +82,7 @@ const Playlist: React.FC<Props> = (props) => {
             initialNumToRender={10}
             renderItem={({ item }) => {
               return (
-                <View style={styles.body} key={item.name}>
+                <View style={styles.bodyMusicLine} key={item.name}>
                   <TouchableOpacity
                     onPress={() => {
                       setUpdate(!update);
@@ -196,6 +196,9 @@ const Playlist: React.FC<Props> = (props) => {
   );
 };
 const styles = StyleSheet.create({
+  bodyMusicLine: {
+    width : Dimensions.get('screen').width*0.9
+  },
   wupusPlaylist: {
     alignItems :'center',
     justifyContent : 'flex-start',
@@ -262,7 +265,7 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(0,0,0,0.1)",
     borderRadius: 20,
   },
-  textExcludes: {
+  textExcludes: { 
     color: "black",
     fontSize: 14,
     textAlign: "center",
